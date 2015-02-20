@@ -85,9 +85,9 @@ $dataset = $midas->getDataSet('dataset', false); // Returns a ResultDataSet, not
 
 /* Streaming and Pipes */
 $midas->stream($data, [
-  ['command', $params'],
-  ['command', $params'],
-  [':algorithm', $params']
+  ['command', $params],
+  ['command', $params],
+  [':algorithm', $params]
 ]);
 
 // Streams go through algorithms, unless specified as command
