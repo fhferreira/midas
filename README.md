@@ -16,6 +16,8 @@ These are the basic terms and concepts that make midas work.
 
 A **Midas** object contains and monages algorithms, commands, pipes, and config. This is the public API.
 
+A **MidasDataObject** is a Midas Object that can save data results to itself
+
 **Algorithms** process raw data and return a refined DataObject.
 
 **Commands** are algorithms that can be issued from `$midas` directly.
@@ -96,5 +98,13 @@ $one = $data->getResult(1)
 $two = $data->getResult(2)
 $two = $data->get();
 ```
+
+## Potential first-party algorithms/commands
+  * solve()
+  * marshal() dependency
+  * transform() fractal dependency
+  * solveFor()
+  * filter() dependency
+  * valdate() dependency
 
 Other potential names: Alchemist, Spinner, Forge, Kiln
