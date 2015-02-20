@@ -1,5 +1,7 @@
-# Midas
+# Midas-Data
 Framework-agnostic manager for algorithms, equations, and data processing tasks. Turn raw data into gold.
+
+*According to myth, Midas was a man bestowed with a golden hand that would transform all he touched to gold. Midas-Data does the same for your data sets. Just don't turn your wife to gold.*
 
 This package is in the very early proposal stages. There is no actionable code as of yet. Please issue a pull request against this README.md to make suggestions.
 
@@ -12,8 +14,8 @@ This package is in the very early proposal stages. There is no actionable code a
   * Create a DataObject that can save its own version history
   * Use Outputters to format output for CLI, HTTP, Etc
 
-## Introduction
-This is a basic introduction
+## Use Cases
+When would it be good to use Midas?
 
 ## Concepts
 These are the basic terms and concepts that make midas work.
