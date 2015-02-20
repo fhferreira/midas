@@ -8,8 +8,12 @@ This package is in the very early proposal stages. There is no actionable code a
   * Ability to filter, validate, and marshal data in an immutable way. (input one structure, output another)
   * Ability to nest and chain algorithms and equations
   * Save and reuse datasets and algorithms
+  * Stream data through commands and algorithms
+  * Create a DataObject that can save its own version history
+  * Use Outputters to format output for CLI, HTTP, Etc
 
 ## Introduction
+This is a basic introduction
 
 ## Concepts
 These are the basic terms and concepts that make midas work.
@@ -49,6 +53,16 @@ $midas->addCommand('solve', function(RawData $data){
   return $processedData;
 });
 
+// Or use an IoC container to resolve Command Dependencies
+$container = Container; // PHP
+$container->add('Dependency');
+$container->add('solver', 'SolverCommand')
+          ->withArgument('Dependency')
+          ->withArgument($someConfig);
+          
+$midas->addCommand('solve', $container->get('solver'));
+
+// Getters, Setters, and Helpers
 $midas->getCommand('solve');
 $midas->extendCommand('solve', 'balance', 'balance'); // solve.balance -> EquationCommand::balance()
 $midas->extendCommand('solve', 'balance', 'other ways of registering commands');
@@ -98,6 +112,16 @@ $one = $data->getResult(1)
 $two = $data->getResult(2)
 $two = $data->get();
 ```
+## Architecture
+`Midas\Midas`: Main Midas Class
+`Midas\MidasData`: extends Midas, has Data trait
+`Midas\Data`: olds data, both Raw and Refined
+`Midas\Pipe`: a streamer
+`Midas\CommandManager`: manages Commands
+`Midas\AlgorithmManager`: manages algorithms
+`Midas\ComandInterface`: contract
+`Midas\AlgorithmInterface`: contract
+`Midas\ParameterBag`: holds parameters
 
 ## Potential first-party algorithms/commands
   * solve()
