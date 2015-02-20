@@ -115,22 +115,63 @@ $two = $data->getResult(2)
 $two = $data->get();
 ```
 ## Architecture
-`Midas\Midas`: Main Midas Class
-`Midas\MidasData`: extends Midas, has Data trait
-`Midas\Data`: olds data, both Raw and Refined
-`Midas\Pipe`: a streamer
-`Midas\CommandManager`: manages Commands
-`Midas\AlgorithmManager`: manages algorithms
-`Midas\ComandInterface`: contract
-`Midas\AlgorithmInterface`: contract
-`Midas\ParameterBag`: holds parameters
+  * `Midas\Midas`: Main Midas Class
+  * `Midas\MidasData`: extends Midas, has Data trait
+  * `Midas\Data`: olds data, both Raw and Refined
+  * `Midas\Pipe`: a streamer
+  * `Midas\CommandManager`: manages Commands
+  * `Midas\AlgorithmManager`: manages algorithms
+  * `Midas\ComandInterface`: contract
+  * `Midas\AlgorithmInterface`: contract
+  * `Midas\ParameterBag`: holds parameters
+  * `Midas\Data` extends `Illuminate\Support\Collections`
+
+## Roadmap for the Future
+#### v0.1 Midas Container
+  * Main Midas Container
+  * Manage Commands
+  * Manage Algorithms
+
+#### v0.2 Process Data and Return
+  * Process through commands and algorithms
+  * Create Data Objects that extend Collections
+  * Return Refined Data Objects (Not MidasData)
+  * ** First Release**
+
+#### v0.3 Transform and Equation Commands
+  * Wrap Fractal to output data via an algorithm (as a test)
+  * Solve equations using PHP math function
+ 
+#### v0.4 Datasets
+  * Save datasets for reuse
+ 
+#### v0.5 Streaming A
+  * Stream `$data` via an array of commands and algorightms
+  * ```php $midas->stream($data, [['command', $params]]);```
+
+#### v0.6 Streaming B
+  * Stream `$data` using pipes
+  * ```php $midas->stream($data)->through()->algorithm()->return();
+  * Endpoints: `return()`, `end()`, `out()`, `out(Outputter $outputter)`
+
+#### v0.7 Midas Data Objects
+  * Create Midas Data Objects for self storage
+  * ```php $data = $midas->make($data); $data->command('x');```
+
+#### v0.8 First Party algorithms
+  * Marshal() with Aura\Marshal
+  * filter() with Aura\Filter
+  * validate() with Dependency
+
+#### v1.0 Bugsquash and Awesome
+  * Can be released after v0.7 and run paralell with First Party Algorithms
 
 ## Potential first-party algorithms/commands
-  * solve()
-  * marshal() dependency
-  * transform() fractal dependency
-  * solveFor()
-  * filter() dependency
-  * valdate() dependency
+  * solve() for equations
+  * marshal() for conforming data w/ dependency
+  * transform() for outputting data w/ fractal dependency
+  * solveFor() for equations
+  * filter() returning results from dataset w/ dependency
+  * valdate() returns data schema errors w/ dependency
 
-Other potential names: Alchemist, Spinner, Forge, Kiln
+**Other potential names**: Alchemist, Spinner, Forge, Kiln Cauldron
