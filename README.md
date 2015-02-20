@@ -102,18 +102,23 @@ $midas->stream($data) // or ->pipe($data)
 
 /** Optionally, you can create a MidasDataObject **/
 // Saves all stages to the data object
-$data = $midas->newDataObject()
-$data->set($data)
+$data = $midas->newDataObject() // or data($data) or make($data)
+$data->set($data) // if using data() or make(), you can skip this
 $data->command(); // 0
 $data->process('algorithm') //1
-$data->stream()->through()->end(); // 2
+$data->stream()->through()->algorithm()->end(); // 2
 
 // Now you can get it
-$zero = $data->getResult(0)
-$one = $data->getResult(1)
-$two = $data->getResult(2)
-$two = $data->get();
+$zero = $data->getResult(0) // getFirstResult()
+$one = $data->getResult(1) // getResult(2)->getPreviousResult()->getNextResult()
+$two = $data->getResult(2) // getLastResult()
+$two = $data->get(); // get's latest result
 ```
+## Compared to Gulp
+  * First, gulp runs in php. That's the main difference
+  * Becuase of this, Midas is not truly streaming
+  * Midas is completely synchronous
+
 ## Architecture
   * `Midas\Midas`: Main Midas Class
   * `Midas\MidasData`: extends Midas, has Data trait
@@ -136,7 +141,7 @@ $two = $data->get();
   * Process through commands and algorithms
   * Create Data Objects that extend Collections
   * Return Refined Data Objects (Not MidasData)
-  * ** First Release**
+  * **First Release**
 
 #### v0.3 Transform and Equation Commands
   * Wrap Fractal to output data via an algorithm (as a test)
@@ -151,7 +156,7 @@ $two = $data->get();
 
 #### v0.6 Streaming B
   * Stream `$data` using pipes
-  * ```php $midas->stream($data)->through()->algorithm()->return();
+  * ```php $midas->stream($data)->through()->algorithm()->return();```
   * Endpoints: `return()`, `end()`, `out()`, `out(Outputter $outputter)`
 
 #### v0.7 Midas Data Objects
@@ -167,11 +172,11 @@ $two = $data->get();
   * Can be released after v0.7 and run paralell with First Party Algorithms
 
 ## Potential first-party algorithms/commands
-  * solve() for equations
-  * marshal() for conforming data w/ dependency
-  * transform() for outputting data w/ fractal dependency
-  * solveFor() for equations
-  * filter() returning results from dataset w/ dependency
-  * valdate() returns data schema errors w/ dependency
+  * `solve()` for equations
+  * `marshal()` for conforming data w/ dependency
+  * `transform()` for outputting data w/ fractal dependency
+  * `solveFor()` for equations
+  * `filter()` returning results from dataset w/ dependency
+  * `valdate()` returns data schema errors w/ dependency
 
 **Other potential names**: Alchemist, Spinner, Forge, Kiln Cauldron
