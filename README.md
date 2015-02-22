@@ -17,9 +17,19 @@ This package is in the very early proposal stages. There is no actionable code a
 ## Use Cases
 When would it be good to use Midas?
 
+## Introduction
+Midas is a processing object that works on whatever data you provide it. You can ask *questions* of that data or issue *commands* to process that data in some way. The Midas package itself is almost empty. That is because all the questions and commands are algorithms that you load into (or teach to) midas. You can also save data sets to be reused, use data in mutable or immutable ways, nest algorithms and data, and stream data through multiple algorithms, outputting it in any way you choose.
+
 ## Concepts
 These are the basic terms and concepts that make midas work.
 
+A **command** processes your data according to whichever algorithm the command is tied to and then returns a RefinedDataObject with the results.
+
+A **question** analyzed your data according to whichever algorithm the question is tied to and returns `true` or `false`. There may be the ability for questions in the future which return more complex answers.
+
+A **stream** or **pipe** is an ordered sequence or algorithms which your data is processed through, finally returning a RefinedDataObject or outputing the data in some way.
+
+#### Objects and Classes
 A **Midas** object contains and monages algorithms, commands, pipes, and config. This is the public API.
 
 A **MidasDataObject** is a Midas Object that can save data results to itself
@@ -47,6 +57,28 @@ $result = $midas->process($data, 'Namespace\Algorithm', $params);
 /* Use Commands */
 $result = $midas->solve($data, $params); // magic method
 $result = $midas->filter($data, $criteria);
+
+/* Ask Questions */
+$answer = $midas->is($data, $question, $params);
+$answer = $midas->is($data)->question($parames);
+
+$data = $midas->make($data);
+$data->isQuestion($params);
+
+// Chain questions with conjunctions
+$midas->is($data)
+ ->question1($params)
+ ->and()->question2()
+ ->or()->question3()
+ ->butNot()->question4();
+ 
+ // Finally, you can use closures to order comparrisons
+ $midas->is($data)
+  ->opperation(function($a){
+   return $a->question1($params)->and()->question2();
+  })->butNot()->opperation(function($a){
+   return $a->question3($params)->or()->question4();
+  });
 
 /* Manage commands */
 $midas->addCommand('solve', new EquationCommand());
