@@ -29,6 +29,8 @@ A **question** analyzed your data according to whichever algorithm the question 
 
 A **stream** or **pipe** is an ordered sequence or algorithms which your data is processed through, finally returning a RefinedDataObject or outputing the data in some way.
 
+The pattern is always: `mixed|$data, string|$alias, array|$parameters`, so `$this->midas($data)->alias($parameters)` or `$this->proccess($data, 'alias', $parameters)`
+
 #### Objects and Classes
 A **Midas** object contains and monages algorithms, commands, pipes, and config. This is the public API.
 
@@ -59,11 +61,12 @@ $result = $midas->solve($data, $params); // magic method
 $result = $midas->filter($data, $criteria);
 
 /* Ask Questions */
-$answer = $midas->is($data, $question, $params);
-$answer = $midas->is($data)->question($parames);
+$answer = $midas->is($data, $question, $params); // for one question
+$answer = $midas->is($data)->question($parames)->ask(); // for question chaining
 
 $data = $midas->make($data);
-$data->isQuestion($params);
+$data->isQuestion($params); //for one question
+$data->is()->question()->question()->ask() // mulitiple questions
 
 // Chain questions with conjunctions
 $midas->is($data)
@@ -106,6 +109,7 @@ $midas->isCommand(); $midas->setCommand(); $midas->deleteCommand();
 $midas->clearCommands():
 
 /* Same API for Managing Algorithms */
+/* Same API for Questions and Data */
 
 /* Save Data Sets for reuse */
 $midas->addData('dataset', $data);
