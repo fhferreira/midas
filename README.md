@@ -74,11 +74,11 @@ $midas->is($data)
  
  // Finally, you can use closures to order comparrisons
  $midas->is($data)
-  ->opperation(function($a){
-   return $a->question1($params)->and()->question2();
-  })->butNot()->opperation(function($a){
-   return $a->question3($params)->or()->question4();
-  });
+   ->opperation(function($a){
+      return $a->question1($params)->and()->question2();
+   })->butNot()->opperation(function($a){
+      return $a->question3($params)->or()->question4();
+   });
 
 /* Manage commands */
 $midas->addCommand('solve', new EquationCommand());
@@ -163,6 +163,11 @@ $two = $data->get(); // get's latest result
   * `Midas\ParameterBag`: holds parameters
   * `Midas\Data` extends `Illuminate\Support\Collections`
 
+#### Reserved Words
+  * These words may not be used as any aliases: `is`, `does`, `opperation`, `command`, `algorithm`, 
+  `data`, `parameter`, `midas`, `stream`, `pipe`, `end`, `result`, `out`, `output`, `finish`
+  `solve`, `process`, `solveFor`
+
 ## Roadmap for the Future
 #### v0.1 Midas Container
   * Main Midas Container
@@ -181,21 +186,27 @@ $two = $data->get(); // get's latest result
  
 #### v0.4 Datasets
   * Save datasets for reuse
+
+#### v0.5 Questions
+  * Ask a question
+  * Chain questions
+  * Use conjunctions
+  * Wrap questions in opperations
  
-#### v0.5 Streaming A
+#### v0.6 Streaming A
   * Stream `$data` via an array of commands and algorightms
   * ```php $midas->stream($data, [['command', $params]]);```
 
-#### v0.6 Streaming B
+#### v0.7 Streaming B
   * Stream `$data` using pipes
   * ```php $midas->stream($data)->through()->algorithm()->return();```
   * Endpoints: `return()`, `end()`, `out()`, `out(Outputter $outputter)`
 
-#### v0.7 Midas Data Objects
+#### v0.8 Midas Data Objects
   * Create Midas Data Objects for self storage
   * ```php $data = $midas->make($data); $data->command('x');```
 
-#### v0.8 First Party algorithms
+#### v0.9 First Party algorithms
   * Marshal() with Aura\Marshal
   * filter() with Aura\Filter
   * validate() with Dependency
