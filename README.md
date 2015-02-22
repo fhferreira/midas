@@ -68,17 +68,19 @@ $data->isQuestion($params);
 // Chain questions with conjunctions
 $midas->is($data)
  ->question1($params)
- ->and('question2', $params)
- ->or('question3', $params)
- ->butNot('question4', $params);
+ ->and()->question2($params)
+ ->or()->question3($params)
+ ->butNot()->question4($params)
+ ->ask();
  
  // Finally, you can use closures to order comparrisons
  $midas->is($data)
    ->opperation(function($a){
-      return $a->question1($params)->and('question2')
+      return $a->question1($params)->and('question2')->ask()
    })->butNot()->opperation(function($a){
-      return $a->question3($params)->or('question4');
-   });
+      return $a->question3($params)->or('question4')->ask();
+   })
+   ->ask();
 
 /* Manage commands */
 $midas->addCommand('solve', new EquationCommand());
