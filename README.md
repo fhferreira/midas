@@ -93,7 +93,7 @@ $midas->addCommand('solve', function(RawData $data){
 });
 
 // Or use an IoC container to resolve Command Dependencies
-$container = Container; // PHP
+$container = new Container; // PHP
 $container->add('Dependency');
 $container->add('solver', 'SolverCommand')
           ->withArgument('Dependency')
@@ -107,6 +107,35 @@ $midas->extendCommand('solve', 'balance', 'balance'); // solve.balance -> Equati
 $midas->extendCommand('solve', 'balance', 'other ways of registering commands');
 $midas->isCommand(); $midas->setCommand(); $midas->deleteCommand();
 $midas->clearCommands():
+
+/* Use nested algorithms */
+Class MyAlgorithm {
+  public function aliases()
+  {
+    return ['alias1', 'alias2'];
+  }
+  
+  public function alias1(){
+  
+  }
+  public function alias2($data, $params){
+    $data = $this->midas->process('alias1', $this->data, $params);
+    
+    return do_something_else($data);
+  }
+}
+
+$midas->registerCommand('Namespace\MyAlgorithm');
+$midas->alias1($data, $params);
+$midas->alias2($data, $params);
+
+// Now Alias2 will run Alias 1 first
+// You can make a closure command dependent on another command, but there is (currently) no way to enforce these dependencies.
+$midas->addCommand('update', function($data, $params){});
+$midas->addCommand('fix', function($data, $params, $midas){
+  $data = $midas->update($data, $params);
+  return do_something_else($data);
+});
 
 /* Same API for Managing Algorithms */
 /* Same API for Questions and Data */
@@ -179,10 +208,11 @@ $two = $data->get(); // get's latest result
   * Main Midas Container
   * Manage Commands
   * Manage Algorithms
+  * Nested and dependent algorithms
 
 #### v0.2 Process Data and Return
   * Process through commands and algorithms
-  * Create Data Objects that extend Collections
+  * Create RefindedData Objects that extend Collections
   * Return Refined Data Objects (Not MidasData)
   * **First Release**
 
