@@ -49,8 +49,6 @@ The **Algorithm Manager** and **CommandManager** are protected sub-objects of Mi
 
 ## Sample API
 ```php
-$midas = new Midas($config);
-
 /* Use algorithms */
 $result = $midas->process($data, 'algorithm', $params);
 $result = $midas->process($data, function(RawData $data){}, $params);
@@ -203,7 +201,8 @@ $two = $data->get(); // get's latest result
 
 ## Roadmap for the Future
 #### v0.1 Midas Container
-  * Main Midas Container
+  * ~~Main Midas Container~~
+  * ~~Manage Algorithms~~
   * Manage Commands
   * ~~Manage Algorithms~~
   * Nested and dependent algorithms
