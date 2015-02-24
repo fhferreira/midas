@@ -4,13 +4,6 @@ namespace Michaels\Midas\Test\Unit\Algorithms;
 use Codeception\Specify;
 use Michaels\Midas\Algorithms\Manager as AlgorithmManager;
 
-/*
- * Goals:
- *  extendCommand()
- *  check for correct type of algorithm on add
- *  convert closures into correct instance of Algorithm
- */
-
 class AlgorithmManagerTest extends \PHPUnit_Framework_TestCase
 {
     use Specify;
