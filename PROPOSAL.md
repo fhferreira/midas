@@ -204,7 +204,6 @@ $two = $data->get(); // get's latest result
   * ~~Main Midas Container~~
   * ~~Manage Algorithms~~
   * Manage Commands
-  * ~~Manage Algorithms~~
   * Nested and dependent algorithms
 
 #### v0.2 Process Data and Return
