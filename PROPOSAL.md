@@ -103,8 +103,6 @@ $midas->addCommand('solve', $container->get('solver'));
 
 // Getters, Setters, and Helpers
 $midas->getCommand('solve');
-$midas->extendCommand('solve', 'balance', 'balance'); // solve.balance -> EquationCommand::balance()
-$midas->extendCommand('solve', 'balance', 'other ways of registering commands');
 $midas->isCommand(); $midas->setCommand(); $midas->deleteCommand();
 $midas->clearCommands():
 
@@ -207,7 +205,7 @@ $two = $data->get(); // get's latest result
 #### v0.1 Midas Container
   * Main Midas Container
   * Manage Commands
-  * Manage Algorithms
+  * ~~Manage Algorithms~~
   * Nested and dependent algorithms
 
 #### v0.2 Process Data and Return
