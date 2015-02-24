@@ -86,9 +86,9 @@ $midas->is($data)
    ->ask();
 
 /* Manage commands */
-$midas->addCommand('solve', new EquationCommand());
-$midas->addCommand('solve', 'Namespace\EquationCommand');
-$midas->addCommand('solve', function(RawData $data){
+$midas->addCommand('solve', new EquationCommand()); //done
+$midas->addCommand('solve', 'Namespace\EquationCommand'); //done
+$midas->addCommand('solve', function(RawData $data){ //done
   return $processedData;
 });
 
