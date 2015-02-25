@@ -202,12 +202,10 @@ $two = $data->get(); // get's latest result
 ## Roadmap for the Future
 #### v0.1 Midas Container
   * ~~Main Midas Container~~
-  * ~~Manage Algorithms~~
-  * Manage Commands
-  * Nested and dependent algorithms
+  * ~~Manage Commands~~
 
 #### v0.2 Process Data and Return
-  * Process through commands and algorithms
+  * Process through commands
   * Create RefindedData Objects that extend Collections
   * Return Refined Data Objects (Not MidasData)
   * **First Release**
