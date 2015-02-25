@@ -51,4 +51,13 @@ class Midas
     {
         $this->commands->clear();
     }
+
+    public function __call($name, $arguments)
+    {
+        $command = $this->commands->fetch($name);
+        $data = $arguments[0];
+        $params = (isset($arguments[1])) ? $arguments[1] : null;
+
+        return $command->run($data);
+    }
 }

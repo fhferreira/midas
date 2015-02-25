@@ -16,7 +16,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
     {
         $midas = new Midas();
 
-        $this->specify("it adds aglorithms", function() use ($midas) {
+        $this->specify("it adds commands", function() use ($midas) {
             $midas->addCommand('classTest1', 'Michaels\Midas\Test\Stubs\ClassBasedCommand');
             $midas->addCommand('objectTest1', new ClassBasedCommand());
             $midas->addCommand('closureTest1', function ($data, array $params = null) {
@@ -52,6 +52,25 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $midas->clearCommands();
             $emptyCommands = $midas->getAllCommands();
             $this->assertEmpty($emptyCommands, 'failed to clear commands');
+        });
+    }
+
+    public function testProcessDataThroughCommands()
+    {
+        $midas = new Midas();
+        $midas->addCommands([
+            'add' => function($data, $params = null) {
+                return $data + 10;
+            },
+
+            'subtract' => function($data, $params = null) {
+                return false;
+            }
+        ]);
+
+        $this->specify("it processes data through a magic method with no params", function() use ($midas) {
+            $actual = $midas->add(1);
+            $this->assertEquals(11, $actual, "failed to process test `add` command");
         });
     }
 }
