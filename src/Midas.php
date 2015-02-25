@@ -22,10 +22,14 @@ class Midas
 //        $this->data = new DataManager();
     }
 
-    /** Commands */
-    public function addCommand($alias, $algorithm)
+    public function addCommand($alias, $command)
     {
-        $this->commands->add($alias, $algorithm);
+        $this->commands->add($alias, $command);
+    }
+
+    public function addCommands(array $commands)
+    {
+        $this->commands->add($commands);
     }
 
     public function getAllCommands()
