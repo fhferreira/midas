@@ -1,9 +1,9 @@
 <?php
 namespace Michaels\Midas\Test\Stubs;
 
-use Michaels\Midas\Algorithms\AlgorithmInterface;
+use Michaels\Midas\Commands\CommandInterface;
 
-class ClassBasedAlgorithm implements AlgorithmInterface
+class ClassBasedCommand implements CommandInterface
 {
 
     public function run($data, array $params = null)

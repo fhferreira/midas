@@ -1,7 +1,7 @@
 <?php
 namespace Michaels\Midas\Test\Stubs;
 
-class InvalidClassBasedAlgorithm
+class InvalidClassBasedCommand
 {
     // Nothing
 }

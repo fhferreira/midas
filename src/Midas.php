@@ -1,43 +1,50 @@
 <?php
 namespace Michaels\Midas;
 
-use Michaels\Midas\Algorithms\Manager as AlgorithmManager;
+use Michaels\Midas\Commands\Manager as CommandManager;
 
 class Midas
 {
 
-    protected $algorithms;
+    protected $commands;
+//    protected $data;
+//    protected $questions;
 
     /**
-     * Create a new Skeleton Instance
+     * Create a new Midas Instance
      */
     public function __construct()
     {
-        $this->algorithms = new AlgorithmManager();
+        $this->commands = new CommandManager();
+        // Saves logic as algorithm
+
+//        $this->questions = new QuestionManager();
+//        $this->data = new DataManager();
     }
 
-    public function addAlgorithm($alias, $algorithm)
+    /** Commands */
+    public function addCommand($alias, $algorithm)
     {
-        $this->algorithms->add($alias, $algorithm);
+        $this->commands->add($alias, $algorithm);
     }
 
-    public function getAllAlgorithms()
+    public function getAllCommands()
     {
-        return $this->algorithms->getAll();
+        return $this->commands->getAll();
     }
 
-    public function isAlgorithm($alias)
+    public function isCommand($alias)
     {
-        return $this->algorithms->exists($alias);
+        return $this->commands->exists($alias);
     }
 
-    public function removeAlgorithm($alias)
+    public function removeCommand($alias)
     {
-        $this->algorithms->remove($alias);
+        $this->commands->remove($alias);
     }
 
-    public function clearAlgorithms()
+    public function clearCommands()
     {
-        $this->algorithms->clear();
+        $this->commands->clear();
     }
 }

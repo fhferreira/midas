@@ -1,9 +1,9 @@
 <?php
-namespace Michaels\Midas\Algorithms;
+namespace Michaels\Midas\Commands;
 
 use Closure;
 
-class GenericAlgorithm implements AlgorithmInterface
+class GenericCommand implements CommandInterface
 {
 
     protected $closure;
