@@ -13,6 +13,10 @@ class Manager extends BaseManager
 {
     public function fetch($alias)
     {
+        if (!$this->exists($alias)) {
+            throw new CommandNotFoundException("`$alias` is not a registered command");
+        }
+
         $stored = $this->get($alias);
         $command = null;
 

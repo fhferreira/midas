@@ -117,7 +117,5 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals('a string', $actual['string'], "failed to read `string` from complex data");
             $this->assertEquals('A', $actual['multiArray']['test'], "failed to read `string` from complex data");
         });
-
-        // Exceptions
     }
 }

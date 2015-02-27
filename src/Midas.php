@@ -2,6 +2,7 @@
 namespace Michaels\Midas;
 
 use Michaels\Midas\Commands\Manager as CommandManager;
+use Michaels\Midas\Exceptions\CommandNotFoundException;
 
 class Midas
 {

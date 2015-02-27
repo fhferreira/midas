@@ -42,6 +42,10 @@ class CommandsManagerTest extends \PHPUnit_Framework_TestCase
     {
         $manager = new CommandManager();
 
+        $this->specify("it throws an exception when command is not registered", function() use ($manager) {
+            $manager->fetch('commandThatDoesNotExist');
+        }, ['throws' => 'Michaels\Midas\Exceptions\CommandNotFoundException']);
+
         $this->specify("it throws Exception when class is not found", function () use ($manager) {
             $manager->add('classTest', 'A\Wrong\Class');
             $manager->fetch('classTest');
