@@ -64,13 +64,60 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             },
 
             'subtract' => function($data, $params = null) {
-                return false;
+                return $data - 10;
+            },
+
+            'params' => function ($data, $params = null) {
+                return $data + $params[0];
+            },
+
+            'text' => function ($data, $params = null) {
+                return $data . " " . $params['text'] . ".";
+            },
+
+            'complexArray' => function ($data, $params = null) {
+                return [
+                    'int' => 1,
+                    'bool' => true,
+                    'string' => 'a string',
+                    'array' => [3, 1, 7, 3],
+                    'multiArray' => ['test' => 'A'],
+                ];
             }
         ]);
 
         $this->specify("it processes data through a magic method with no params", function() use ($midas) {
             $actual = $midas->add(1);
-            $this->assertEquals(11, $actual, "failed to process test `add` command");
+            $this->assertEquals(11, $actual, "failed to process `add` command");
+
+            $actual = $midas->subtract(20);
+            $this->assertEquals(10, $actual, "failed to process `subract` command");
         });
+
+        $this->specify("it processes data through a magic method with params", function() use ($midas) {
+            $actual = $midas->params(2, [2]);
+            $this->assertEquals(4, $actual, "failed to process `params` command with parameter");
+
+            $actual = $midas->text("test", ['text' => 'sentence']);
+            $this->assertEquals('test sentence.', $actual, "failed to process `text` command with named params");
+        });
+
+        $this->specify("it returns complex data as a DataCollection", function() use ($midas) {
+            $actual = $midas->complexArray(null);
+
+            $this->assertInstanceOf('Michaels\Midas\RefinedData', $actual, "failed to return a RefinedDataObject");
+            $this->assertEquals('a string', $actual['string'], "failed to read `string` from complex data");
+            $this->assertEquals('A', $actual['multiArray']['test'], "failed to read `string` from complex data");
+        });
+
+        $this->specify("it returns data as standard if requested", function() use ($midas) {
+            $actual = $midas->complexArray(null, null, false);
+
+            $this->assertNotInstanceOf('Michaels\Midas\RefinedData', $actual, "failed to return a non RefinedDataObject");
+            $this->assertEquals('a string', $actual['string'], "failed to read `string` from complex data");
+            $this->assertEquals('A', $actual['multiArray']['test'], "failed to read `string` from complex data");
+        });
+
+        // Exceptions
     }
 }

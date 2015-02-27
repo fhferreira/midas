@@ -57,7 +57,19 @@ class Midas
         $command = $this->commands->fetch($name);
         $data = $arguments[0];
         $params = (isset($arguments[1])) ? $arguments[1] : null;
+        $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
 
-        return $command->run($data);
+        $result = $command->run($data, $params);
+
+        return $this->ensureDataCollection($result, $returnRefined);
+    }
+
+    private function ensureDataCollection($data, $returnRefined)
+    {
+        if (is_array($data) and $returnRefined) {
+            return new RefinedData($data);
+        } else {
+            return $data;
+        }
     }
 }
