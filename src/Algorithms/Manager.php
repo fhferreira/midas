@@ -2,9 +2,6 @@
 namespace Michaels\Midas\Algorithms;
 
 use Closure;
-use Michaels\Midas\Commands\CommandInterface;
-use Michaels\Midas\Commands\CommandNotFoundException;
-use Michaels\Midas\Commands\InvalidCommandException;
 use Michaels\Midas\Manager as BaseManager;
 
 abstract class Manager extends BaseManager
@@ -13,7 +10,7 @@ abstract class Manager extends BaseManager
      * Handles a request for a not found algorithm.
      * Typically, throw some instance of AlgorithmNotFoundException
      *
-     * @param $alias the name of the algorithm not found
+     * @param $alias name of the algorithm not found
      * @return void
      */
     abstract protected function handleNotFound($alias);
@@ -74,7 +71,7 @@ abstract class Manager extends BaseManager
      */
     public function validate($algorithm)
     {
-        if (!$algorithm instanceof CommandInterface) {
+        if (!$algorithm instanceof AlgorithmInterface) {
             $this->handleInvalid($algorithm);
         }
     }
