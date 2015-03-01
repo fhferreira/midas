@@ -2,13 +2,14 @@
 namespace Michaels\Midas;
 
 use Michaels\Midas\Commands\Manager as CommandManager;
-use Michaels\Midas\Exceptions\CommandNotFoundException;
+use Michaels\Midas\Data\Manager as DataManager;
+use Michaels\Midas\Data\RefinedData;
 
 class Midas
 {
 
     protected $commands;
-//    protected $data;
+    protected $data;
 //    protected $questions;
 
     /**
@@ -20,7 +21,7 @@ class Midas
         // Saves logic as algorithm
 
 //        $this->questions = new QuestionManager();
-//        $this->data = new DataManager();
+        $this->data = new DataManager();
     }
 
     public function addCommand($alias, $command)
@@ -33,14 +34,19 @@ class Midas
         $this->commands->add($commands);
     }
 
+    public function getCommand($alias)
+    {
+        $this->commands->get($alias);
+    }
+
     public function getAllCommands()
     {
         return $this->commands->getAll();
     }
 
-    public function isCommand($alias)
+    public function setCommand($alias, $command)
     {
-        return $this->commands->exists($alias);
+        $this->commands->set($alias, $command);
     }
 
     public function removeCommand($alias)
@@ -51,6 +57,56 @@ class Midas
     public function clearCommands()
     {
         $this->commands->clear();
+    }
+
+    public function isCommand($alias)
+    {
+        return $this->commands->exists($alias);
+    }
+
+    public function fetchCommand($alias)
+    {
+        return $this->commands->fetch($alias);
+    }
+
+    public function addData($alias, $data = null)
+    {
+        $this->data->add($alias, $data);
+    }
+
+    public function getData($alias)
+    {
+        return $this->data->get($alias);
+    }
+
+    public function getAllData()
+    {
+        return $this->data->getAll();
+    }
+
+    public function setData($alias, $data)
+    {
+        $this->data->set($alias, $data);
+    }
+
+    public function removeData($alias)
+    {
+        $this->data->remove($alias);
+    }
+
+    public function clearData()
+    {
+        $this->data->clear();
+    }
+
+    public function isData($alias)
+    {
+        return $this->data->exists($alias);
+    }
+
+    public function data($alias)
+    {
+        return $this->data->fetch($alias);
     }
 
     public function __call($name, $arguments)

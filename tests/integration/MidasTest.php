@@ -42,7 +42,14 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $this->assertFalse($doesNotExist, 'failed to verify non-existence of command');
         });
 
-        // Delete Commands
+        $this->specify("it updates (sets) commands", function() use ($midas) {
+            $midas->setCommand('newCommand', 'Value');
+
+            $commands = $midas->getAllCommands();
+            $this->assertArrayHasKey('newCommand', $commands, 'class-based command not set');
+            $this->assertEquals('Value', $commands['newCommand']);
+        });
+
         $this->specify("it deletes and clears commands", function() use ($midas) {
             $midas->removeCommand('classTest1');
             $commands = $midas->getAllCommands();
@@ -105,7 +112,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
         $this->specify("it returns complex data as a DataCollection", function() use ($midas) {
             $actual = $midas->complexArray(null);
 
-            $this->assertInstanceOf('Michaels\Midas\RefinedData', $actual, "failed to return a RefinedDataObject");
+            $this->assertInstanceOf('Michaels\Midas\Data\RefinedData', $actual, "failed to return a RefinedDataObject");
             $this->assertEquals('a string', $actual['string'], "failed to read `string` from complex data");
             $this->assertEquals('A', $actual['multiArray']['test'], "failed to read `string` from complex data");
         });
@@ -113,9 +120,119 @@ class MidasTest extends \PHPUnit_Framework_TestCase
         $this->specify("it returns data as standard if requested", function() use ($midas) {
             $actual = $midas->complexArray(null, null, false);
 
-            $this->assertNotInstanceOf('Michaels\Midas\RefinedData', $actual, "failed to return a non RefinedDataObject");
+            $this->assertNotInstanceOf('Michaels\Midas\Data\RefinedData', $actual, "failed to return a non RefinedDataObject");
             $this->assertEquals('a string', $actual['string'], "failed to read `string` from complex data");
             $this->assertEquals('A', $actual['multiArray']['test'], "failed to read `string` from complex data");
         });
     }
+
+    public function testManageDataSets()
+    {
+        $midas = new Midas();
+
+        $testData = [
+            'some' => true,
+            'complex' => [
+                'data' => 123
+            ]
+        ];
+
+        $this->specify("it adds data", function() use ($midas, $testData) {
+            $midas->addData('data1', $testData);
+
+            $data = $midas->getAllData();
+            $this->assertEquals($testData, $data['data1']);
+        });
+
+        $this->specify("it verifies that data exists", function() use ($midas) {
+            $midas->addData('exists', 'value');
+            $exists = $midas->isData('exists');
+            $doesNotExist = $midas->isCommand('doesNotExist');
+
+            $this->assertTrue($exists, 'failed to verify existing data');
+            $this->assertFalse($doesNotExist, 'failed to verify non-existence of data');
+        });
+
+        $this->specify("it updates (sets) data", function() use ($midas) {
+            $midas->setData('setdata', 'value');
+
+            $data = $midas->getData('setdata');
+            $this->assertEquals('value', $data, 'failed to set data');
+        });
+
+        $this->specify("it deletes and clears data", function() use ($midas) {
+            $midas->addData('deletedata', 'value');
+            $midas->addData('deletedata2', 'value2');
+
+            $midas->removeData('deletedata');
+
+            $this->assertArrayNotHasKey('deletedata', $midas->getAllData(), 'failed to remove a single data set');
+
+            $midas->clearData();
+            $emptyData = $midas->getAllData();
+            $this->assertEmpty($emptyData, 'failed to clear data');
+        });
+
+        $this->specify("it fetches complex data as a RawDataObject", function() use ($midas) {
+            $testData = [
+                'string' => 'abc',
+                'int' => 123,
+                'bool' => true,
+                'array' => [
+                    'a' => 'A',
+                    'b' => 'B"'
+                ]
+            ];
+
+            $midas->addData('testComplexData', $testData);
+
+            $rawData = $midas->data('testComplexData');
+            $this->assertInstanceOf('Michaels\Midas\Data\RawData', $rawData, 'failed to fetch raw data as RawData');
+            $this->assertEquals($testData, $rawData->toArray());
+        });
+
+        $this->specify("it fetches simple data as a RawDataObject", function() use ($midas) {
+            $testStringData = 'test data';
+            $testBoolData = true;
+            $testIntData = 123;
+
+            $midas->addData('stringData', $testStringData);
+            $midas->addData('boolData', $testBoolData);
+            $midas->addData('intData', $testIntData);
+
+            $actualStringData = $midas->data('stringData');
+            $actualBoolData = $midas->data('boolData');
+            $actualIntData = $midas->data('intData');
+
+            $this->assertInstanceOf('Michaels\Midas\Data\RawData', $actualStringData, 'failed to fetch string raw data as RawData');
+            $this->assertInstanceOf('Michaels\Midas\Data\RawData', $actualBoolData, 'failed to fetch boolean raw data as RawData');
+            $this->assertInstanceOf('Michaels\Midas\Data\RawData', $actualIntData, 'failed to fetch integer raw data as RawData');
+
+            $this->assertEquals($testStringData, $actualStringData->value(), 'string');
+            $this->assertEquals($testBoolData, $actualBoolData->value(), 'bool');
+            $this->assertEquals($testIntData, $actualIntData->value(), 'int');
+        });
+    }
+
+//
+//    public function testMidasConfig()
+//    {
+//        $midas = new Midas();
+//
+//        $config = [
+//            'reserved_words' => [
+//                'some'
+//            ]
+//        ];
+//
+//        $defaults = [
+//            'reserved_words' => [
+//                'data', 'commands'
+//            ]
+//        ];
+//
+//        $midas->config('name', 'default');
+//        $midas->setConfig('name', 'value');
+//        $midas->getConfig('name', 'default');
+//    }
 }
