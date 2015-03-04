@@ -8,7 +8,6 @@ use Michaels\Midas\Questions\Manager as QuestionManager;
 
 class Midas
 {
-
     protected $commands;
     protected $data;
     protected $defaultConfig = [
@@ -33,6 +32,12 @@ class Midas
         $this->config = new Manager(array_merge($this->defaultConfig, $config));
     }
 
+    /**
+     * Get a config item
+     * @param $item
+     * @param null $fallback
+     * @return array|bool|null
+     */
     public function config($item, $fallback = null)
     {
         return $this->config->exists($item) ? $this->config->get($item) : $fallback;
