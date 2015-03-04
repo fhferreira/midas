@@ -37,7 +37,7 @@ $midas = new Michaels\Midas\Midas();
 /** Use Commands **/
 $midas->addCommand('touch', function($data, $params) {
     // process data however you like
-    // $data .= " has been turned to " . $params . " gold!";
+    $data .= " has been turned to " . $params . " gold!";
     return $data;
 });
 
@@ -46,7 +46,7 @@ $result = $midas->touch('my data', 'pure'); // "my data has been turned to pure 
 
 ## Usage and Concepts
 ### Issue and Manage Commands
-A **command** processes your data according to an algorithm (see below) and then returns the result.
+A **command** processes your data and returns the result.
 
 You can add commands to midas in one of three ways. First and simplest is as a **closure**.
 ```php
@@ -58,7 +58,7 @@ The closure is handed three arguments when its run: `$data`, `$params`, and `$co
 
 When a command is actually executed, Midas turns it into an object that is an instance of `Commands\GenericCommand` which means it comes with some helpers. These helpers are accessed from the `$command` argument. Think of `$command` as `$this`. And you only need to receive it if you want to.
 
-For more complex commands (especially those that may use dependencies), you can add an instance of `Commands\CommandInterface` either by classname or an instantiated object.
+For more complex commands (especially those that may use dependencies), you can add an instance of `Commands\CommandInterface` either by **classname** or an **instantiated object**.
 
 ```php
 class MyAwesomeCommand implements \Michaels\Midas\Commands\CommandInterface
@@ -78,9 +78,9 @@ You may also extend `Commands\GenericCommand` to inherit the helpers that closur
 
 Once you have commands added to Midas, you can manage them in a variety of ways.
 ```php
-$midas->getCommand('alias'); // Returns the raw command, that is whatever you added like the closure or classname
+$midas->getCommand('alias'); // Returns the raw command (closure, object, or classname)
 $midas->getAllCommands(); // Returns array of all commands
-$midas->fetch('alias'); // Returns the executable command object
+$midas->fetchCommand('alias'); // Returns the executable command object
 $midas->isCommand('alias'); // Has this command been added?
 $midas->setCommand('alias', 'new value'); // Adds or overwrites a command
 $midas->removeCommand('alias'); // Removes a single command
@@ -125,7 +125,7 @@ $midas->someCommand($midas->data('friends'));
 
 ### Configure Midas
 Midas have several configurable options. You may set them at instantiation or at any point afterward.
-`reserved_words`: An array of words that cannot be used as aliases for commands.
+  * `reserved_words`: An array of words that cannot be used as aliases for commands.
 More options are on the way.
 
 ```php
