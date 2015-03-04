@@ -12,7 +12,10 @@ class Midas
     protected $commands;
     protected $data;
     protected $defaultConfig = [
-        'reserved_words' => ['data', 'run'],
+        'reserved_words' => [
+            'is', 'does', 'opperation', 'command', 'algorithm', 'data', 'parameter', 'midas',
+            'stream', 'pipe', 'end', 'result', 'out', 'output', 'finish', 'solve', 'process', 'solveFor'
+        ],
         'errors' => 'exceptions', // or silent
         'test_dummy' => true
     ];

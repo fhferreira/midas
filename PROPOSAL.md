@@ -204,7 +204,7 @@ $two = $data->get(); // get's latest result
   * ~~Create RefindedData Objects that extend Collections~~
   * ~~Return Refined Data Objects (Not MidasData)~~
   * ~~Save datasets for reuse~~
-  * Midas Configuration: reserved words, error handling
+  * ~~Midas Configuration: reserved words, error handling~~
 
 #### v0.3 Transform and Equation Commands
   * Wrap Fractal to output data via an algorithm (as a test)
