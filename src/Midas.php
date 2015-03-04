@@ -284,7 +284,6 @@ class Midas
      * @param $alias
      * @return Data\RawData
      */
-    // todo: Add test for this
     public function fetchData($alias)
     {
         return $this->data->fetch($alias);
@@ -299,7 +298,7 @@ class Midas
     public function data($alias, $fetch = false)
     {
         if ($fetch) {
-            return $this->data->fetch($alias);
+            return $this->fetchData($alias);
         }
 
         return $this->data->get($alias);
