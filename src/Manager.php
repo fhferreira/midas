@@ -154,4 +154,9 @@ class Manager implements ArrayAccess
             unset($this->items[$alias]);
         }
     }
+
+    public function reset(array $items = [])
+    {
+        $this->items = $items;
+    }
 }

@@ -19,7 +19,9 @@ class GenericCommand implements CommandInterface
     public function run($data, array $params = null)
     {
         $closure = $this->closure;
-        return $closure($data, $params);
+        $result = $closure($data, $params);
+
+        return $result;
     }
 
     private function setRun($closure)

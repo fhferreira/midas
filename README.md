@@ -11,7 +11,7 @@ Framework-agnostic manager for algorithms, equations, and data processing tasks.
 
 *According to myth, Midas was a man bestowed with a golden hand that would transform all he touched to gold. Midas-Data does the same for your data sets. Just don't turn your wife to gold.*
 
-This package is in the very early proposal stages. There is no actionable code as of yet. Please issue a pull request against this README.md to make suggestions.
+This package is in the early development stages.
 
 ## Goals
   * Ability to load algorithms and equations, and then solve given parameters

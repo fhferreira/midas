@@ -1,45 +1,31 @@
 <?php
 namespace Michaels\Midas\Commands;
 
-use Closure;
-use Michaels\Midas\Commands\CommandInterface;
-use Michaels\Midas\Exceptions\AlgorithmNotFoundException;
-use Michaels\Midas\Exceptions\CommandNotFoundException;
-use Michaels\Midas\Exceptions\InvalidAlgorithmException;
-use Michaels\Midas\Exceptions\InvalidCommandException;
-use Michaels\Midas\Manager as BaseManager;
+use Michaels\Midas\Algorithms\Manager as AlgorithmManager;
 
-class Manager extends BaseManager
+class Manager extends AlgorithmManager
 {
-    public function fetch($alias)
+
+    protected function handleNotFound($alias)
     {
-        $stored = $this->get($alias);
-        $command = null;
-
-        if ($stored instanceof Closure) {
-            $command = GenericCommand::create($stored);
-
-        } elseif (is_object($stored)) {
-            $command =  $stored;
-
-        } elseif (is_string($stored)) {
-            if (!class_exists($stored, true)) {
-                throw new CommandNotFoundException();
-            }
-
-            $class = '\\' . $stored;
-            $command =  new $class();
-        }
-
-        $this->validate($command);
-
-        return $command;
+        throw new CommandNotFoundException("`$alias` is not a registered command");
     }
 
-    public function validate($command)
+    protected function handleInvalid($algorithm)
     {
-        if (!$command instanceof CommandInterface) {
-            throw new InvalidCommandException();
+        $classname = class_basename($algorithm);
+        throw new InvalidCommandException("`$classname` is not a valid command. It must implement CommandInterface");
+    }
+
+    protected function createGeneric($closure)
+    {
+        return GenericCommand::create($closure);
+    }
+
+    public function validate($algorithm)
+    {
+        if (!$algorithm instanceof CommandInterface) {
+            $this->handleInvalid($algorithm);
         }
     }
 }

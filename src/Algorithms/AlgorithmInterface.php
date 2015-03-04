@@ -1,5 +1,5 @@
 <?php
-namespace Michaels\Midas;
+namespace Michaels\Midas\Algorithms;
 
 interface AlgorithmInterface
 {
