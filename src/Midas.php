@@ -1,16 +1,29 @@
 <?php
 namespace Michaels\Midas;
 
+use Closure;
+use Michaels\Midas\Commands\CommandInterface;
 use Michaels\Midas\Commands\Manager as CommandManager;
 use Michaels\Midas\Data\Manager as DataManager;
-use Michaels\Midas\Data\RawData;
 use Michaels\Midas\Data\RefinedData;
-use Michaels\Midas\Questions\Manager as QuestionManager;
 
+/**
+ * Primary API and entry point
+ *
+ * @package Michaels\Midas
+ */
 class Midas
 {
+    /** @var CommandManager **/
     protected $commands;
+
+    /** @var DataManager **/
     protected $data;
+
+    /**
+     * Default configuration
+     * @var array
+     */
     protected $defaultConfig = [
         /* ToDo: Throw exceptions for reserved words */
         'reserved_words' => [
@@ -18,29 +31,29 @@ class Midas
             'stream', 'pipe', 'end', 'result', 'out', 'output', 'finish', 'solve', 'process', 'solveFor'
         ],
 
-        /* ToDo: Use this config for exceptions or silent */
+        /* todo: Use this config for exceptions or silent */
         'errors' => 'exceptions', // or silent
         'test_dummy' => true
     ];
-//    protected $questions;
 
     /**
      * Create a new Midas Instance
+     *
      * @param array $config
      */
     public function __construct(array $config = [])
     {
         $this->commands = new CommandManager();
-//        $this->questions = new QuestionManager();
         $this->data = new DataManager();
         $this->config = new Manager(array_merge($this->defaultConfig, $config));
     }
 
     /**
      * Get a config item
+     *
      * @param $item
      * @param null $fallback
-     * @return array|bool|null
+     * @return mixed|null
      */
     public function config($item, $fallback = null)
     {
@@ -49,8 +62,9 @@ class Midas
 
     /**
      * Set a config item or overwrite all config items
-     * @param $item
-     * @param bool $value
+     *
+     * @param array|string $item
+     * @param mixed $value
      * @return $this
      */
     public function setConfig($item, $value = false)
@@ -65,109 +79,224 @@ class Midas
         return $this;
     }
 
+    /**
+     * Get a config item or fallback
+     *
+     * @param string $item
+     * @param mixed|null $fallback
+     * @return mixed|null
+     */
     public function getConfig($item, $fallback = null)
     {
         return $this->config($item, $fallback);
     }
 
+    /**
+     * Returns all config items
+     *
+     * @return array|null
+     */
     public function getAllConfig()
     {
         return $this->config->getAll();
     }
 
-
+    /**
+     * Returns a factory default config item
+     *
+     * @param string $item
+     * @param mixed|null $fallback
+     * @return mixed|null
+     */
     public function getDefaultConfig($item, $fallback = null)
     {
         return isset($this->defaultConfig[$item]) ? $this->defaultConfig[$item] : $fallback;
     }
 
+    /**
+     * Add a command to the Command Manager
+     *
+     * @param string $alias
+     * @param string|Closure|CommandInterface $command
+     */
     public function addCommand($alias, $command)
     {
         $this->commands->add($alias, $command);
     }
 
+    /**
+     * Add multiple commands to the Command Manager
+     *
+     * @param array $commands
+     */
     public function addCommands(array $commands)
     {
         $this->commands->add($commands);
     }
 
+    /**
+     * Return a raw command from the Command Manager
+     *
+     * @param string $alias
+     * @return mixed
+     */
     public function getCommand($alias)
     {
-        $this->commands->get($alias);
+        return $this->commands->get($alias);
     }
 
+    /**
+     * Return all raw commands from the Command Manager
+     *
+     * @return mixed
+     */
     public function getAllCommands()
     {
         return $this->commands->getAll();
     }
 
+    /**
+     * Add or overwrite a command
+     *
+     * @param string $alias
+     * @param string|Closure|CommandInterface $command
+     */
     public function setCommand($alias, $command)
     {
         $this->commands->set($alias, $command);
     }
 
+    /**
+     * Remove a single command
+     *
+     * @param string $alias
+     */
     public function removeCommand($alias)
     {
         $this->commands->remove($alias);
     }
 
+    /**
+     * Remove all commands
+     */
     public function clearCommands()
     {
         $this->commands->clear();
     }
 
+    /**
+     * Check for the existance of a command
+     *
+     * @param string $alias
+     * @return bool
+     */
     public function isCommand($alias)
     {
         return $this->commands->exists($alias);
     }
 
+    /**
+     * Return a command as an instance of CommandInterface
+     *
+     * @param $alias
+     * @return Algorithms\CommandInterface
+     */
     public function fetchCommand($alias)
     {
         return $this->commands->fetch($alias);
     }
 
+    /**
+     * Add a data set
+     *
+     * @param string $alias
+     * @param mixed|null $data
+     */
     public function addData($alias, $data = null)
     {
         $this->data->add($alias, $data);
     }
 
+    /**
+     * Return a raw piece of data
+     *
+     * @param string $alias
+     * @return mixed
+     */
     public function getData($alias)
     {
         return $this->data->get($alias);
     }
 
+    /**
+     * Return all data sets
+     *
+     * @return array|null
+     */
     public function getAllData()
     {
         return $this->data->getAll();
     }
 
+    /**
+     * Create or update a data set
+     *
+     * @param string $alias
+     * @param mixed $data
+     */
     public function setData($alias, $data)
     {
         $this->data->set($alias, $data);
     }
 
+    /**
+     * Remove a single data set
+     *
+     * @param string $alias
+     */
     public function removeData($alias)
     {
         $this->data->remove($alias);
     }
 
+    /**
+     * Clear all data sets
+     */
     public function clearData()
     {
         $this->data->clear();
     }
 
+    /**
+     * Check for existence of a data set
+     *
+     * @param string $alias
+     * @return bool
+     */
     public function isData($alias)
     {
         return $this->data->exists($alias);
     }
 
-    // ToDo: Add test for this
+    /**
+     * Return data as a RawData object
+     *
+     * @param $alias
+     * @return Data\RawData
+     */
+    // todo: Add test for this
     public function fetchData($alias)
     {
         return $this->data->fetch($alias);
     }
 
-    /* ToDo: Add test for this */
+    /**
+     * Return saved data set
+     * @param string $alias
+     * @param bool $fetch
+     * @return mixed|Data\RawData
+     */
+    /* todo: Add test for this */
     public function data($alias, $fetch = false)
     {
         if ($fetch) {
@@ -177,6 +306,15 @@ class Midas
         return $this->data->get($alias);
     }
 
+    /**
+     * Handle commands issued
+     *
+     * This magic method processes commands.
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return RefinedData
+     */
     public function __call($name, $arguments)
     {
         $command = $this->commands->fetch($name);
@@ -184,12 +322,19 @@ class Midas
         $params = (isset($arguments[1])) ? $arguments[1] : null;
         $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
 
-        /* ToDo: Pass an instance of the command as well for helpers */
+        /* todo: Pass an instance of the command as well for helpers */
         $result = $command->run($data, $params, $command);
 
         return $this->ensureDataCollection($result, $returnRefined);
     }
 
+    /**
+     * Ensure that returned data is an instance of RefinedData
+     *
+     * @param $data
+     * @param $returnRefined
+     * @return RefinedData
+     */
     private function ensureDataCollection($data, $returnRefined)
     {
         if (is_array($data) and $returnRefined) {
