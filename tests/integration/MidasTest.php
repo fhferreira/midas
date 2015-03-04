@@ -215,7 +215,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
 
             $midas->addData('testComplexData', $testData);
 
-            $rawData = $midas->data('testComplexData');
+            $rawData = $midas->data('testComplexData', true);
             $this->assertInstanceOf('Michaels\Midas\Data\RawData', $rawData, 'failed to fetch raw data as RawData');
             $this->assertEquals($testData, $rawData->toArray());
         });
@@ -229,9 +229,9 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $midas->addData('boolData', $testBoolData);
             $midas->addData('intData', $testIntData);
 
-            $actualStringData = $midas->data('stringData');
-            $actualBoolData = $midas->data('boolData');
-            $actualIntData = $midas->data('intData');
+            $actualStringData = $midas->data('stringData', true);
+            $actualBoolData = $midas->data('boolData', true);
+            $actualIntData = $midas->data('intData', true);
 
             $this->assertInstanceOf('Michaels\Midas\Data\RawData', $actualStringData, 'failed to fetch string raw data as RawData');
             $this->assertInstanceOf('Michaels\Midas\Data\RawData', $actualBoolData, 'failed to fetch boolean raw data as RawData');
@@ -242,26 +242,4 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($testIntData, $actualIntData->value(), 'int');
         });
     }
-
-//
-//    public function testMidasConfig()
-//    {
-//        $midas = new Midas();
-//
-//        $config = [
-//            'reserved_words' => [
-//                'some'
-//            ]
-//        ];
-//
-//        $defaults = [
-//            'reserved_words' => [
-//                'data', 'commands'
-//            ]
-//        ];
-//
-//        $midas->config('name', 'default');
-//        $midas->setConfig('name', 'value');
-//        $midas->getConfig('name', 'default');
-//    }
 }

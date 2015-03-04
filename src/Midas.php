@@ -296,7 +296,6 @@ class Midas
      * @param bool $fetch
      * @return mixed|Data\RawData
      */
-    /* todo: Add test for this */
     public function data($alias, $fetch = false)
     {
         if ($fetch) {
