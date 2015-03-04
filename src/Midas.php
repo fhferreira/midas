@@ -3,6 +3,7 @@ namespace Michaels\Midas;
 
 use Michaels\Midas\Commands\Manager as CommandManager;
 use Michaels\Midas\Data\Manager as DataManager;
+use Michaels\Midas\Data\RawData;
 use Michaels\Midas\Data\RefinedData;
 use Michaels\Midas\Questions\Manager as QuestionManager;
 
@@ -11,10 +12,13 @@ class Midas
     protected $commands;
     protected $data;
     protected $defaultConfig = [
+        /* ToDo: Throw exceptions for reserved words */
         'reserved_words' => [
             'is', 'does', 'opperation', 'command', 'algorithm', 'data', 'parameter', 'midas',
             'stream', 'pipe', 'end', 'result', 'out', 'output', 'finish', 'solve', 'process', 'solveFor'
         ],
+
+        /* ToDo: Use this config for exceptions or silent */
         'errors' => 'exceptions', // or silent
         'test_dummy' => true
     ];
@@ -157,9 +161,20 @@ class Midas
         return $this->data->exists($alias);
     }
 
-    public function data($alias)
+    // ToDo: Add test for this
+    public function fetchData($alias)
     {
         return $this->data->fetch($alias);
+    }
+
+    /* ToDo: Add test for this */
+    public function data($alias, $fetch = false)
+    {
+        if ($fetch) {
+            return $this->data->fetch($alias);
+        }
+
+        return $this->data->get($alias);
     }
 
     public function __call($name, $arguments)
@@ -169,7 +184,8 @@ class Midas
         $params = (isset($arguments[1])) ? $arguments[1] : null;
         $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
 
-        $result = $command->run($data, $params);
+        /* ToDo: Pass an instance of the command as well for helpers */
+        $result = $command->run($data, $params, $command);
 
         return $this->ensureDataCollection($result, $returnRefined);
     }
