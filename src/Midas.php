@@ -4,24 +4,63 @@ namespace Michaels\Midas;
 use Michaels\Midas\Commands\Manager as CommandManager;
 use Michaels\Midas\Data\Manager as DataManager;
 use Michaels\Midas\Data\RefinedData;
+use Michaels\Midas\Questions\Manager as QuestionManager;
 
 class Midas
 {
 
     protected $commands;
     protected $data;
+    protected $defaultConfig = [
+        'reserved_words' => ['data', 'run'],
+        'errors' => 'exceptions', // or silent
+        'test_dummy' => true
+    ];
 //    protected $questions;
 
     /**
      * Create a new Midas Instance
+     * @param array $config
      */
-    public function __construct()
+    public function __construct(array $config = [])
     {
         $this->commands = new CommandManager();
-        // Saves logic as algorithm
-
 //        $this->questions = new QuestionManager();
         $this->data = new DataManager();
+        $this->config = new Manager(array_merge($this->defaultConfig, $config));
+    }
+
+    public function config($item, $fallback = null)
+    {
+        return $this->config->exists($item) ? $this->config->get($item) : $fallback;
+    }
+
+    public function setConfig($item, $value = false)
+    {
+        if (is_array($item)) {
+            $this->config->reset($item);
+            return $this;
+        }
+
+        $this->config->set($item, $value);
+
+        return $this;
+    }
+
+    public function getConfig($item, $fallback = null)
+    {
+        return $this->config($item, $fallback);
+    }
+
+    public function getAllConfig()
+    {
+        return $this->config->getAll();
+    }
+
+
+    public function getDefaultConfig($item, $fallback = null)
+    {
+        return isset($this->defaultConfig[$item]) ? $this->defaultConfig[$item] : $fallback;
     }
 
     public function addCommand($alias, $command)

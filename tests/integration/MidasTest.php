@@ -10,7 +10,36 @@ class MidasTest extends \PHPUnit_Framework_TestCase
 {
     use Specify;
 
-    protected $midas;
+    public function testConfigureMidas()
+    {
+        $this->specify("it instantiates with default configs", function () {
+            $midas = new Midas();
+
+            $this->assertTrue($midas->config('test_dummy'), "failed to get default set item");
+            $this->assertEquals('response', $midas->config('nonexistent', 'response'), 'failed to return a fallback value');
+        });
+
+        $this->specify("it instantiates with user-provided configs", function () {
+            $midas = new Midas(['test_dummy' => false]);
+
+            $this->assertFalse($midas->config('test_dummy'), 'failed to set a user defined item on instantiation');
+            $this->assertArrayHasKey('reserved_words', $midas->getAllConfig(), 'failed to cascade config items');
+            $this->assertTrue($midas->getDefaultConfig('test_dummy'), 'failed to get default config item');
+        });
+
+        $this->specify("it sets config items", function () {
+            $midas = new Midas();
+
+            $midas->setConfig(['test_dummy' => false]);
+            $this->assertFalse($midas->config('test_dummy'), 'failed to reset all configs');
+
+            $midas->setConfig('test_dummy', true);
+            $this->assertTrue($midas->config('test_dummy'), 'failed to set a single config item');
+
+            $midas->setConfig('new_key', 'value');
+            $this->assertEquals('value', $midas->config('new_key'), 'failed to set a non-existent single config item');
+        });
+    }
 
     public function testManageCommands()
     {
