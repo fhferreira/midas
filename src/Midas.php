@@ -43,6 +43,12 @@ class Midas
         return $this->config->exists($item) ? $this->config->get($item) : $fallback;
     }
 
+    /**
+     * Set a config item or overwrite all config items
+     * @param $item
+     * @param bool $value
+     * @return $this
+     */
     public function setConfig($item, $value = false)
     {
         if (is_array($item)) {
