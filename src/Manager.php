@@ -5,6 +5,10 @@ use ArrayAccess;
 
 class Manager implements ArrayAccess
 {
+    /**
+     * Arrayable items
+     * @var array
+     */
     protected $items = [];
 
     /**

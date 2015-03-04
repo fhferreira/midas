@@ -1,7 +1,9 @@
 <?php
 namespace Michaels\Midas\Commands;
 
-interface CommandInterface
+use Michaels\Midas\Algorithms\AlgorithmInterface;
+
+interface CommandInterface extends AlgorithmInterface
 {
 
 }
