@@ -9,7 +9,7 @@
 
 Framework-agnostic manager for data processing and querying. Turn raw data into gold.
 
-*According to myth, Midas was a man bestowed with a golden hand that would transform all he touched to gold. Midas-Data does the same for your data sets. Just don't turn your wife to gold.*
+> According to myth, Midas was a man bestowed with a golden hand that would transform all he touched to gold. Midas-Data does the same for your data sets. Just don't turn your wife to gold.
 
 This package is in the early development stages. Please see [CONTRIBUTING](CONTRIBUTING.md) to pitch in.
 
