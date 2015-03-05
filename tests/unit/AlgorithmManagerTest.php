@@ -6,7 +6,7 @@ use StdClass;
 
 class AlgorithmManagerTest extends \PHPUnit_Framework_TestCase {
 
-    public function testAddByClassName()
+    public function testAddByClassName() //
     {
         $manager = new Manager();
         $manager->add('classTest', 'Some\Class');

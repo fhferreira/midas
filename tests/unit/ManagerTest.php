@@ -6,7 +6,7 @@ use stdClass;
 
 class ManagerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAddSingle()
+    public function testAddSingle() //
     {
         $manager = new Manager();
         $manager->add('alias', 'value');

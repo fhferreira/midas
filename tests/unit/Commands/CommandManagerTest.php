@@ -6,7 +6,7 @@ use Michaels\Midas\Commands\Manager as CommandManager;
 
 class CommandsManagerTest extends \PHPUnit_Framework_TestCase
 {
-    use Specify;
+    use Specify; //
 
     public function testFetchCommands()
     {
