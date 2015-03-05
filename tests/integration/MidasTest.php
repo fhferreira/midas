@@ -173,6 +173,17 @@ class MidasTest extends \PHPUnit_Framework_TestCase
         });
     }
 
+    /**
+     * @expectedException        InvalidArgumentException
+     * @expectedExceptionMessage `data` is a reserved word
+     */
+    public function testCommandExceptions()
+    {
+        $midas = new Midas();
+
+        $midas->addCommand('data', 'Doesnt\Matter');
+    }
+
     public function testManageDataSets()
     {
         $midas = new Midas();

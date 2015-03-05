@@ -25,9 +25,8 @@ class Midas
      * @var array
      */
     protected $defaultConfig = [
-        /* ToDo: Throw exceptions for reserved words */
         'reserved_words' => [
-            'is', 'does', 'opperation', 'command', 'algorithm', 'data', 'parameter', 'midas',
+            'is', 'does', 'operation', 'command', 'algorithm', 'data', 'parameter', 'midas',
             'stream', 'pipe', 'end', 'result', 'out', 'output', 'finish', 'solve', 'process', 'solveFor'
         ],
         'test_dummy' => true
@@ -118,6 +117,10 @@ class Midas
      */
     public function addCommand($alias, $command)
     {
+        if (in_array($alias, $this->config('reserved_words'))) {
+            throw new \InvalidArgumentException("`$alias` is a reserved word");
+        }
+
         $this->commands->add($alias, $command);
     }
 
