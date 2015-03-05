@@ -3,13 +3,13 @@
 [![Latest Version](https://img.shields.io/github/release/chrismichaels84/midas.svg?style=flat-square)](https://github.com/chrismichaels84/midas/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Build Status](https://img.shields.io/travis/chrismichaels84/midas/master.svg?style=flat-square)](https://travis-ci.org/chrismichaels84/midas)
-[![Coverage Status](https://coveralls.io/repos/chrismichaels84/midas/badge.svg?branch=develop)](https://coveralls.io/r/chrismichaels84/midas?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/chrismichaels84/midas/badge.svg?branch=master)](https://coveralls.io/r/chrismichaels84/midas?branch=develop)
 
 Framework-agnostic manager for data processing and querying. Turn raw data into gold.
 
 > According to myth, Midas was a man bestowed with a golden hand that would transform all he touched to gold. Midas-Data does the same for your data sets. Just don't turn your wife to gold.
 
-This package is in the early development stages. Please see [CONTRIBUTING](CONTRIBUTING.md) to pitch in.
+This package is in the early development stages. Please do not use in production. Api subject to change as we march toward 1.0. See [CONTRIBUTING](CONTRIBUTING.md) to pitch in.
 
 ## Goals
   * Ability to load algorithms and equations, and then solve given parameters
