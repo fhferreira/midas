@@ -172,7 +172,7 @@ $two = $data->get(); // get's latest result
   `solve`, `process`, `solveFor`
 
 ## Roadmap for the Future
-#### v0.1 Midas Container
+#### ~~v0.1 Midas Container~~
   * ~~Main Midas Container~~
   * ~~Manage Commands~~
 
@@ -182,6 +182,7 @@ $two = $data->get(); // get's latest result
   * ~~Return Refined Data Objects (Not MidasData)~~
   * ~~Save datasets for reuse~~
   * ~~Midas Configuration: reserved words, error handling~~
+  * Bug squash and todos
 
 #### v0.3 Transform and Equation Commands
   * Wrap Fractal to output data via an algorithm (as a test)

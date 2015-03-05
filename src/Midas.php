@@ -25,14 +25,14 @@ class Midas
      * @var array
      */
     protected $defaultConfig = [
-        /* ToDo: Throw exceptions for reserved words */
+        /* todo: Throw exceptions for reserved words */
         'reserved_words' => [
-            'is', 'does', 'opperation', 'command', 'algorithm', 'data', 'parameter', 'midas',
+            'is', 'does', 'operation', 'command', 'algorithm', 'data', 'parameter', 'midas',
             'stream', 'pipe', 'end', 'result', 'out', 'output', 'finish', 'solve', 'process', 'solveFor'
         ],
 
         /* todo: Use this config for exceptions or silent */
-        'errors' => 'exceptions', // or silent
+        'throw_exceptions' => true, // false for silent
         'test_dummy' => true
     ];
 
