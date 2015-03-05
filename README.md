@@ -3,7 +3,9 @@
 [![Latest Version](https://img.shields.io/github/release/chrismichaels84/midas.svg?style=flat-square)](https://github.com/chrismichaels84/midas/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Build Status](https://img.shields.io/travis/chrismichaels84/midas/master.svg?style=flat-square)](https://travis-ci.org/chrismichaels84/midas)
-[![Coverage Status](https://coveralls.io/repos/chrismichaels84/midas/badge.svg?branch=master)](https://coveralls.io/r/chrismichaels84/midas?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/chrismichaels84/midas/badge.svg?branch=master)](https://coveralls.io/r/chrismichaels84/midas?branch=master)
+
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/74752ec3-3676-4167-a0f0-b17affea9928/big.png)](https://insight.sensiolabs.com/account/widget?project=74752ec3-3676-4167-a0f0-b17affea9928)
 
 Framework-agnostic manager for data processing and querying. Turn raw data into gold.
 
