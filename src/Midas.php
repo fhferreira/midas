@@ -313,7 +313,7 @@ class Midas
     public function __call($name, $arguments)
     {
         $command = $this->commands->fetch($name);
-        $data = $arguments[0];
+        $data = isset($arguments[0]) ? $arguments[0] : null;
         $params = (isset($arguments[1])) ? $arguments[1] : null;
         $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
 
