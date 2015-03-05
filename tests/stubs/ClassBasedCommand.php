@@ -8,6 +8,6 @@ class ClassBasedCommand implements CommandInterface
 
     public function run($data, array $params = null)
     {
-        return true; //
+        return true;
     }
 }
