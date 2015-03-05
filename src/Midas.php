@@ -182,7 +182,7 @@ class Midas
     }
 
     /**
-     * Check for the existance of a command
+     * Check for the existence of a command
      *
      * @param string $alias
      * @return bool
@@ -317,8 +317,7 @@ class Midas
         $params = (isset($arguments[1])) ? $arguments[1] : null;
         $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
 
-        /* todo: Pass an instance of the command as well for helpers */
-        $result = $command->run($data, $params, $command);
+        $result = $command->run($data, $params);
 
         return $this->ensureDataCollection($result, $returnRefined);
     }

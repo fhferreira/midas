@@ -45,11 +45,11 @@ class MidasTest extends \PHPUnit_Framework_TestCase
     {
         $midas = new Midas();
 
-        $this->specify("it adds commands", function() use ($midas) {
+        $this->specify("it adds commands", function () use ($midas) {
             $midas->addCommand('classTest1', 'Michaels\Midas\Test\Stubs\ClassBasedCommand');
             $midas->addCommand('objectTest1', new ClassBasedCommand());
             $midas->addCommand('closureTest1', function ($data, array $params = null) {
-                return true;
+                return TRUE;
             });
 
             $commands = $midas->getAllCommands();
@@ -60,10 +60,10 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $this->assertInstanceOf('Michaels\Midas\Test\Stubs\ClassBasedCommand', $commands['objectTest1']);
 
             $this->assertArrayHasKey('closureTest1', $commands, 'closure-based command not set');
-            $this->assertEquals(true, $commands['closureTest1']('nothing', []));
+            $this->assertEquals(TRUE, $commands['closureTest1']('nothing', []));
         });
 
-        $this->specify("it verifies that commands exists", function() use ($midas) {
+        $this->specify("it verifies that commands exists", function () use ($midas) {
             $exists = $midas->isCommand('classTest1');
             $doesNotExist = $midas->isCommand('doesNotExist');
 
@@ -71,7 +71,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $this->assertFalse($doesNotExist, 'failed to verify non-existence of command');
         });
 
-        $this->specify("it updates (sets) commands", function() use ($midas) {
+        $this->specify("it updates (sets) commands", function () use ($midas) {
             $midas->setCommand('newCommand', 'Value');
 
             $commands = $midas->getAllCommands();
@@ -79,7 +79,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals('Value', $commands['newCommand']);
         });
 
-        $this->specify("it deletes and clears commands", function() use ($midas) {
+        $this->specify("it deletes and clears commands", function () use ($midas) {
             $midas->removeCommand('classTest1');
             $commands = $midas->getAllCommands();
 
@@ -88,6 +88,24 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $midas->clearCommands();
             $emptyCommands = $midas->getAllCommands();
             $this->assertEmpty($emptyCommands, 'failed to clear commands');
+        });
+
+        $this->specify("it fetches command", function () use ($midas) {
+            $midas->addCommand('fetchedCommand', function($data, $params){
+                return true;
+            });
+
+            $command = $midas->fetchCommand('fetchedCommand');
+
+            $this->assertInstanceOf('Michaels\Midas\Commands\GenericCommand', $command, 'failed to fetch a generic command');
+        });
+
+        $this->specify("it allows closures to use command instance", function () use ($midas) {
+            $midas->addCommand('helpersCommand', function($data, $params, $command){
+                return $command;
+            });
+
+            $this->assertInstanceOf('Michaels\Midas\Commands\GenericCommand', $midas->helpersCommand(), 'failed to return an instance of its own command');
         });
     }
 

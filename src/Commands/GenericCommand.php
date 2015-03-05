@@ -9,7 +9,6 @@ use Closure;
  */
 class GenericCommand implements CommandInterface
 {
-
     /**
      * Stored algorithm if command converted from closure
      * @var
@@ -36,7 +35,7 @@ class GenericCommand implements CommandInterface
     public function run($data, array $params = null)
     {
         $closure = $this->closure;
-        $result = $closure($data, $params);
+        $result = $closure($data, $params, $this);
 
         return $result;
     }
