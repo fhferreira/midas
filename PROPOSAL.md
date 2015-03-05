@@ -123,6 +123,29 @@ $dataset->solve($params);
 
 $dataset = $midas->getDataSet('dataset', false); // Returns a ResultDataSet, not methods
 
+/* Algorithm Packs */
+// Composer packages with a valid MidasProvider::provides()
+
+$midas->addX()->from('vendor.pack.algorithm'); // add a specific command
+$midas->addXs()->from('vendor.pack'); // add all commands from pack
+$midas->addPack('vendor.pack'); // add all algorithms from pack
+
+Class MidasPovider
+{
+    public static function provides()
+    {
+        return [
+            'commands' => [
+                'com1' => $alg,
+                'com2' => $alg,
+            ],
+            'questions' => [],
+        ]
+    }
+}
+
+// A pack must be PSR-4: Vendor\Pack\Command
+
 /* Streaming and Pipes */
 $midas->stream($data, [
   ['command', $params],
@@ -184,11 +207,13 @@ $two = $data->get(); // get's latest result
   * ~~Midas Configuration: reserved words, error handling~~
   * ~~Generic Command Helpers Init~~
 
-#### v0.3 Transform and Equation Commands
-  * Wrap Fractal to output data via an algorithm (as a test)
-  * Solve equations using PHP math function
-  * Filter command
-  * **First Release**
+#### v0.3 Algorithm Packs and Samples
+  * Nest Algorithms here or at streaming?
+  * Add multiple algorithms (commands, questions, etc) from Algorithm Packs
+  * Create first-party sample packs:
+    * Wrap Fractal to output data via an algorithm (as a test)
+    * Solve equations using PHP math function
+    * Filter command
 
 #### v0.4 Questions
   * Ask a question
