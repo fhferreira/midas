@@ -30,9 +30,6 @@ class Midas
             'is', 'does', 'opperation', 'command', 'algorithm', 'data', 'parameter', 'midas',
             'stream', 'pipe', 'end', 'result', 'out', 'output', 'finish', 'solve', 'process', 'solveFor'
         ],
-
-        /* todo: Use this config for exceptions or silent */
-        'errors' => 'exceptions', // or silent
         'test_dummy' => true
     ];
 
