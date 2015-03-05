@@ -3,13 +3,13 @@ Framework-agnostic manager for algorithms, equations, and data processing tasks.
 
 *According to myth, Midas was a man bestowed with a golden hand that would transform all he touched to gold. Midas-Data does the same for your data sets. Just don't turn your wife to gold.*
 
-This package is in the very early proposal stages. There is no actionable code as of yet. Please issue a pull request against this README.md to make suggestions.
+This package is in the proposal stages. Please issue a pull request against this README.md to make suggestions.
 
 ## Goals
-  * Ability to load algorithms and equations, and then solve given parameters
+  * ~~Ability to load algorithms and equations, and then solve given parameters~~
   * Ability to filter, validate, and marshal data in an immutable way. (input one structure, output another)
   * Ability to nest and chain algorithms and equations
-  * Save and reuse datasets and algorithms
+  * ~~Save and reuse datasets and algorithms~~
   * Stream data through commands and algorithms
   * Create a DataObject that can save its own version history
   * Use Outputters to format output for CLI, HTTP, Etc
@@ -23,48 +23,25 @@ Midas is a processing object that works on whatever data you provide it. You can
 ## Concepts
 These are the basic terms and concepts that make midas work.
 
-A **command** processes your data according to whichever algorithm the command is tied to and then returns a RefinedDataObject with the results.
+A **command** processes your data according to an algorithm and then returns results.
 
-A **question** analyzed your data according to whichever algorithm the question is tied to and returns `true` or `false`. There may be the ability for questions in the future which return more complex answers.
+A **question** analyzes your data according to an algorithm and returns `true` or `false`. There may be the ability for questions in the future which return more complex answers.
 
 A **stream** or **pipe** is an ordered sequence or algorithms which your data is processed through, finally returning a RefinedDataObject or outputing the data in some way.
 
-The pattern is always: `mixed|$data, string|$alias, array|$parameters`, so `$this->midas($data)->alias($parameters)` or `$this->proccess($data, 'alias', $parameters)`
-
-#### Objects and Classes
-A **Midas** object contains and monages algorithms, commands, pipes, and config. This is the public API.
-
-A **MidasDataObject** is a Midas Object that can save data results to itself
-
-**Algorithms** process raw data and return a refined DataObject.
-
-**Commands** are algorithms that can be issued from `$midas` directly.
-
-A **pipe** or **stream** allows for chaining algorithms together.
-
-An **Outputer** outputs the data from a pipe or stream without stopping the flow
-
-The **Algorithm Manager** and **CommandManager** are protected sub-objects of Midas that manage algorithms and commands.
-
-
 ## Sample API
 ```php
-/* Use algorithms */
-$result = $midas->process($data, 'algorithm', $params);
-$result = $midas->process($data, function(RawData $data){}, $params);
-$result = $midas->process($data, 'Namespace\Algorithm', $params);
-
 /* Use Commands */
 $result = $midas->solve($data, $params); // magic method
 $result = $midas->filter($data, $criteria);
 
 /* Ask Questions */
-$answer = $midas->is($data, $question, $params); // for one question
-$answer = $midas->is($data)->question($parames)->ask(); // for question chaining
+$answer = $midas->is($data, $questions, $params); // for one question
+$answer = $midas->is($data)->question($params)->ask(); // for question chaining
 
 $data = $midas->make($data);
 $data->isQuestion($params); //for one question
-$data->is()->question()->question()->ask() // mulitiple questions
+$data->is($data)->question()->question()->ask() // multiple questions
 
 // Chain questions with conjunctions
 $midas->is($data)
@@ -74,7 +51,7 @@ $midas->is($data)
  ->butNot()->question4($params)
  ->ask();
  
- // Finally, you can use closures to order comparrisons
+ // Finally, you can use closures to order comparisons
  $midas->is($data)
    ->opperation(function($a){
       return $a->question1($params)->and('question2')->ask()
@@ -91,7 +68,7 @@ $midas->addCommand('solve', function(RawData $data){ //done
 });
 
 // Or use an IoC container to resolve Command Dependencies
-$container = new Container; // PHP
+$container = new Container; // PHP League
 $container->add('Dependency');
 $container->add('solver', 'SolverCommand')
           ->withArgument('Dependency')
@@ -185,13 +162,8 @@ $two = $data->get(); // get's latest result
 ## Architecture
   * `Midas\Midas`: Main Midas Class
   * `Midas\MidasData`: extends Midas, has Data trait
-  * `Midas\Data`: olds data, both Raw and Refined
+  * `Midas\Data`: holds data, both Raw and Refined
   * `Midas\Pipe`: a streamer
-  * `Midas\CommandManager`: manages Commands
-  * `Midas\AlgorithmManager`: manages algorithms
-  * `Midas\ComandInterface`: contract
-  * `Midas\AlgorithmInterface`: contract
-  * `Midas\ParameterBag`: holds parameters
   * `Midas\Data` extends `Illuminate\Support\Collections`
 
 #### Reserved Words
@@ -200,49 +172,53 @@ $two = $data->get(); // get's latest result
   `solve`, `process`, `solveFor`
 
 ## Roadmap for the Future
-#### v0.1 Midas Container
+#### ~~v0.1 Midas Container~~
   * ~~Main Midas Container~~
   * ~~Manage Commands~~
 
-#### v0.2 Process Data and Return
-  * Process through commands
-  * Create RefindedData Objects that extend Collections
-  * Return Refined Data Objects (Not MidasData)
-  * **First Release**
+#### ~~v0.2 Process Data and Return~~
+  * ~~Process through commands~~
+  * ~~Create RefindedData Objects that extend Collections~~
+  * ~~Return Refined Data Objects (Not MidasData)~~
+  * ~~Save datasets for reuse~~
+  * ~~Midas Configuration: reserved words, error handling~~
+  * ~~Generic Command Helpers Init~~
 
 #### v0.3 Transform and Equation Commands
   * Wrap Fractal to output data via an algorithm (as a test)
   * Solve equations using PHP math function
- 
-#### v0.4 Datasets
-  * Save datasets for reuse
+  * Filter command
+  * **First Release**
 
-#### v0.5 Questions
+#### v0.4 Questions
   * Ask a question
   * Chain questions
   * Use conjunctions
   * Wrap questions in opperations
  
-#### v0.6 Streaming A
+#### v0.5 Streaming A
   * Stream `$data` via an array of commands and algorightms
   * ```php $midas->stream($data, [['command', $params]]);```
 
-#### v0.7 Streaming B
+#### v0.6 Streaming B
   * Stream `$data` using pipes
   * ```php $midas->stream($data)->through()->algorithm()->return();```
   * Endpoints: `return()`, `end()`, `out()`, `out(Outputter $outputter)`
 
-#### v0.8 Midas Data Objects
+#### v0.7 Midas Data Objects
   * Create Midas Data Objects for self storage
   * ```php $data = $midas->make($data); $data->command('x');```
 
-#### v0.9 First Party algorithms
+#### v0.8 First Party algorithms
   * Marshal() with Aura\Marshal
   * filter() with Aura\Filter
   * validate() with Dependency
 
 #### v1.0 Bugsquash and Awesome
-  * Can be released after v0.7 and run paralell with First Party Algorithms
+  * Can be released after v0.7 and run parallel with First Party Algorithms
+
+#### Beyond
+  * React PHP async streaming support
 
 ## Potential first-party algorithms/commands
   * `solve()` for equations
@@ -252,4 +228,4 @@ $two = $data->get(); // get's latest result
   * `filter()` returning results from dataset w/ dependency
   * `valdate()` returns data schema errors w/ dependency
 
-**Other potential names**: Alchemist, Spinner, Forge, Kiln Cauldron
+**Other potential names**: Alchemist, Spinner, Forge, Kiln, Cauldron

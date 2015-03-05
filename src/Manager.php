@@ -5,13 +5,28 @@ use ArrayAccess;
 
 class Manager implements ArrayAccess
 {
+    /**
+     * Arrayable items
+     * @var array
+     */
     protected $items = [];
 
+    /**
+     * Instantiate the Manager with configuration
+     *
+     * @param array $items
+     */
     public function __construct($items = [])
     {
         $this->items = $items;
     }
 
+    /**
+     * Add an item to the manager
+     * @param $alias
+     * @param null $algorithm
+     * @return $this
+     */
     public function add($alias, $algorithm = null)
     {
         // Multiple adds
@@ -38,6 +53,11 @@ class Manager implements ArrayAccess
         return $this;
     }
 
+    /**
+     * Get an item from the manager
+     * @param $alias
+     * @return array|bool
+     */
     public function get($alias)
     {
         // Namespaced
@@ -62,11 +82,38 @@ class Manager implements ArrayAccess
         return $this->items[$alias];
     }
 
-    public function exists($alias)
+    /**
+     * Get all the items from the manager
+     * @return mixed
+     */
+    public function getAll()
     {
-        return (isset($this->items[$alias]));
+        return $this->items;
     }
 
+    /**
+     * Create or overwrite an item
+     * @param $alias
+     * @param $value
+     */
+    public function set($alias, $value)
+    {
+        $this->items[$alias] = $value;
+    }
+
+    /**
+     * Overwrite all items with an array
+     * @param array $items
+     */
+    public function reset(array $items = [])
+    {
+        $this->items = $items;
+    }
+
+    /**
+     * Clear all items from the manager
+     * @return $this
+     */
     public function clear()
     {
         $this->items = [];
@@ -74,11 +121,24 @@ class Manager implements ArrayAccess
     }
 
     /**
-     * @return mixed
+     * Delete an individual item
+     * @param $alias
      */
-    public function getAll()
+    public function remove($alias)
     {
-        return $this->items;
+        if (isset($this->items[$alias])) {
+            unset($this->items[$alias]);
+        }
+    }
+
+    /**
+     * Check if an item exists in the manager
+     * @param $alias
+     * @return bool
+     */
+    public function exists($alias)
+    {
+        return (isset($this->items[$alias]));
     }
 
     /**
@@ -141,17 +201,5 @@ class Manager implements ArrayAccess
     public function offsetUnset($offset)
     {
         $this->remove($offset);
-    }
-
-    public function set($alias, $value)
-    {
-        $this->items[$alias] = $value;
-    }
-
-    public function remove($alias)
-    {
-        if (isset($this->items[$alias])) {
-            unset($this->items[$alias]);
-        }
     }
 }

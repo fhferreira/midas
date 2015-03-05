@@ -1,11 +1,16 @@
 # Changelog
 
-All Notable changes to `:package_name` will be documented in this file
+All Notable changes to `Midas` will be documented in this file
 
-## NEXT - YYYY-MM-DD
+## NEXT - 2015-03-05
 
 ### Added
-- Nothing
+- Process Commands and Return Data
+- Manage Commands
+- Manage Data Sets
+- Full Testing Coverage
+- Abstract Algorithms
+- Abstract Managers
 
 ### Deprecated
 - Nothing

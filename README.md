@@ -1,17 +1,15 @@
 # Midas-Data
 
-[![Latest Version](https://img.shields.io/github/release/thephpleague/:package_name.svg?style=flat-square)](https://github.com/thephpleague/:package_name/releases)
+[![Latest Version](https://img.shields.io/github/release/chrismichaels84/midas.svg?style=flat-square)](https://github.com/chrismichaels84/midas/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/thephpleague/:package_name/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/:package_name)
-[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/:package_name.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/:package_name/code-structure)
-[![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/:package_name.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/:package_name)
-[![Total Downloads](https://img.shields.io/packagist/dt/league/:package_name.svg?style=flat-square)](https://packagist.org/packages/league/:package_name)
+[![Build Status](https://img.shields.io/travis/chrismichaels84/midas/master.svg?style=flat-square)](https://travis-ci.org/chrismichaels84/midas)
+[![Coverage Status](https://coveralls.io/repos/chrismichaels84/midas/badge.svg?branch=develop)](https://coveralls.io/r/chrismichaels84/midas?branch=develop)
 
-Framework-agnostic manager for algorithms, equations, and data processing tasks. Turn raw data into gold.
+Framework-agnostic manager for data processing and querying. Turn raw data into gold.
 
-*According to myth, Midas was a man bestowed with a golden hand that would transform all he touched to gold. Midas-Data does the same for your data sets. Just don't turn your wife to gold.*
+> According to myth, Midas was a man bestowed with a golden hand that would transform all he touched to gold. Midas-Data does the same for your data sets. Just don't turn your wife to gold.
 
-This package is in the very early proposal stages. There is no actionable code as of yet. Please issue a pull request against this README.md to make suggestions.
+This package is in the early development stages. Please see [CONTRIBUTING](CONTRIBUTING.md) to pitch in.
 
 ## Goals
   * Ability to load algorithms and equations, and then solve given parameters
@@ -24,17 +22,140 @@ This package is in the very early proposal stages. There is no actionable code a
 
 Please see the [proposal](proposal.md) for more information.
 
-## Branches
-The **master** branch always contains the most up-to-date, production ready release. In most cases, this will be the same as the latest release under the "releases" tab.
+## Install
+Via Composer
+``` bash
+$ composer require chrismichaels84/midas
+```
 
-the **develop** branch holds work in progress for point releases (v0.1.**2**). Any work here should be stable. The idea is that a patch for a security or refactor PR is merged into this branch. Once enough patches have been applied here, it will be merged into `master` and released. This branch should always be stable.
+## Getting Started
+``` php
+$midas = new Michaels\Midas\Midas();
 
-**feature-** branches hold in progress work for upcoming features destined for future major or minor releases. These can be unstable.
+/** Use Commands **/
+$midas->addCommand('touch', function($data, $params) {
+    // process data however you like
+    $data .= " has been turned to " . $params . " gold!";
+    return $data;
+});
 
-**patch-** branches hold in progress patches for upcoming point releases, security patches, and refactors. These can be unstable.
+$result = $midas->touch('my data', 'pure'); // "my data has been turned to pure gold"
+```
 
-Be sure to fetch often so you keep your sources up-to-date!
+## Usage and Concepts
+### Issue and Manage Commands
+A **command** processes your data and returns the result.
+
+You can add commands to midas in one of three ways. First and simplest is as a **closure**.
+```php
+$midas->addCommand('alias', function($data, $params, $command) {
+    // algorithm here that returns a result
+});
+```
+The closure is handed three arguments when its run: `$data`, `$params`, and `$command`. `$data` is the input to be processed and `$params` is a a lone or set of parameters. Both are passed by the user when they issue the command.
+
+When a command is actually executed, Midas turns it into an object that is an instance of `Commands\GenericCommand` which means it comes with some helpers. These helpers are accessed from the `$command` argument. Think of `$command` as `$this`. And you only need to receive it if you want to.
+
+For more complex commands (especially those that may use dependencies), you can add an instance of `Commands\CommandInterface` either by **classname** or an **instantiated object**.
+
+```php
+class MyAwesomeCommand implements \Michaels\Midas\Commands\CommandInterface
+{
+    // This is the only required method
+    public function run($data, $params, $command)
+    {
+        // Just like the closure, process and return results
+    }
+}
+
+$midas->addCommand('alias', 'Namespace\MyAwesomeCommand');
+// or
+$midas->addCommand('alias', new MyAwesomeCommand());
+```
+You may also extend `Commands\GenericCommand` to inherit the helpers that closures get.
+
+Once you have commands added to Midas, you can manage them in a variety of ways.
+```php
+$midas->getCommand('alias'); // Returns the raw command (closure, object, or classname)
+$midas->getAllCommands(); // Returns array of all commands
+$midas->fetchCommand('alias'); // Returns the executable command object
+$midas->isCommand('alias'); // Has this command been added?
+$midas->setCommand('alias', 'new value'); // Adds or overwrites a command
+$midas->removeCommand('alias'); // Removes a single command
+$midas->clearCommands(); // Yep, removes all commands
+```
+
+Now that you have commands added, all you have to do to use them is talk to midas.
+```php
+$result = $midas->alias($data, $params);
+```
+It is best practice to make the aliases verbs so you can speak fluently to Midas.
+```php
+$result = $midas->convert($data, $params);
+$result = $midas->filter($data, $params); // etc
+```
+This is all done with magic methods. There are some reserved words.
+
+### Save and Manage Datasets
+You can also save sets of data to be reused. Anytime you have to manage something, the API is the similar as managing commands. In this case, only `fetch()` works differently.
+```php
+$midas->addData('alias', $data);
+$midas->getData('alias');
+$midas->getAllData();
+$midas->fetchData('alias'); // Returns the data converted to a Data\RawData instance
+$midas->isData('alias'); // Has this data been added?
+$midas->setData('alias', 'new value'); // Adds or overwrites a data
+$midas->removeData('alias'); // Removes a single data
+$midas->clearData(); // Yep, removes all data
+
+$midas->data('alias'); // This will return the raw data
+$midas->data('alias', 'fetch'|true); // This will return a RawData instance
+
+$midas->addData('friends', ['michael', 'nicole', 'bethany']);
+$midas->someCommand($midas->data('friends'));
+```
+
+### Ask and Manage Questions
+@todo
+
+### Stream and Pipe Data
+@todo
+
+### Configure Midas
+Midas have several configurable options. You may set them at instantiation or at any point afterward.
+  * `reserved_words`: An array of words that cannot be used as aliases for commands.
+More options are on the way.
+
+```php
+/* Configure at instantiation */
+$midas = new Midas(['option' => 'value']);
+
+/* Configure via manager methods */
+$midas->config($item, $fallback); // Get a config item or a fallback
+$midas->setConfig($item, $value); // Set a config item or an array of items
+$midas->getConfig($item, $fallback);
+$midas->getAllConfig();
+$midas->getDefaultConfig($item, $fallback); // Get a factory shipped config item
+```
+
+### Errors and Exceptions
+@todo
+
+### Algorithms and Custom Types
+Midas is built on algorithms, which is a function that takes some data and (optionally) parameters, and returns a response (such as refined data). Everything in Midas is a type of algorithm.
+
+All commands and questions are Custom Algorithm Types. You can also create your own Custom Algorithm types. More on this later.
+@todo
+
+There are three ways to create algorithms as a closure or through a class. A closure is passed to arguments, the data and whatever parameters. A class must implement whichever interface the algorithm type demands. For instance, commands implement `CommandInterface`. Read about the different types of algorithms like commands and questions.
+
+## Testing
+``` bash
+$ phpunit
+```
+
+## Contributing
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## License
-
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

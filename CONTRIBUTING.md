@@ -2,8 +2,7 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/thephpleague/:package_name).
-
+We accept contributions via Pull Requests on [Github](https://github.com/chrismichaels84/midas).
 
 ## Pull Requests
 
@@ -21,12 +20,21 @@ We accept contributions via Pull Requests on [Github](https://github.com/thephpl
 
 - **Send coherent history** - Make sure each individual commit in your pull request is meaningful. If you had to make multiple intermediate commits while developing, please squash them before submitting.
 
-
 ## Running Tests
 
 ``` bash
 $ phpunit
 ```
 
+## Branches
+The **master** branch always contains the most up-to-date, production ready release. In most cases, this will be the same as the latest release under the "releases" tab.
+
+the **develop** branch holds work in progress for point releases (v0.1.**2**). Any work here should be stable. The idea is that a patch for a security or refactor PR is merged into this branch. Once enough patches have been applied here, it will be merged into `master` and released. This branch should always be stable.
+
+**feature-** branches hold in progress work for upcoming features destined for future major or minor releases. These can be unstable.
+
+**patch-** branches hold in progress patches for upcoming point releases, security patches, and refactors. These can be unstable.
+
+Be sure to fetch often so you keep your sources up-to-date!
 
 **Happy coding**!

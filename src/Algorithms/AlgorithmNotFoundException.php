@@ -1,5 +1,5 @@
 <?php
-namespace Michaels\Midas\Exceptions;
+namespace Michaels\Midas\Algorithms;
 
 use Exception;
 

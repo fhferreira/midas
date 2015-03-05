@@ -3,11 +3,24 @@ namespace Michaels\Midas\Commands;
 
 use Closure;
 
+/**
+ * Class GenericCommand
+ * @package Michaels\Midas\Commands
+ */
 class GenericCommand implements CommandInterface
 {
-
+    /**
+     * Stored algorithm if command converted from closure
+     * @var
+     */
     protected $closure;
 
+    /**
+     * Convert a closure to a GenericCommand
+     *
+     * @param callable $closure
+     * @return static
+     */
     public static function create(Closure $closure)
     {
         $algorithm = new static;
@@ -16,12 +29,22 @@ class GenericCommand implements CommandInterface
         return $algorithm;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function run($data, array $params = null)
     {
         $closure = $this->closure;
-        return $closure($data, $params);
+        $result = $closure($data, $params, $this);
+
+        return $result;
     }
 
+    /**
+     * Save a closure
+     *
+     * @param $closure
+     */
     private function setRun($closure)
     {
         $this->closure = $closure;
