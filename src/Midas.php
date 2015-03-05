@@ -334,7 +334,7 @@ class Midas
      */
     private function ensureDataCollection($data, $returnRefined)
     {
-        if (is_array($data) and $returnRefined) {
+        if (is_array($data) && $returnRefined) {
             return new RefinedData($data);
         } else {
             return $data;
