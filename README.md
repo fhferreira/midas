@@ -22,7 +22,7 @@ This package is in the early development stages. Please do not use in production
   * Create a DataObject that can save its own version history
   * Use Outputters to format output for CLI, HTTP, Etc
 
-Please see the [proposal](proposal.md) for more information.
+Please see the proposal.md in the `develop` branch for more information.
 
 ## Install
 Via Composer
