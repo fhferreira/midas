@@ -315,14 +315,12 @@ class Midas
      */
     public function __call($name, $arguments)
     {
-        $command = $this->commands->fetch($name);
-        $data = isset($arguments[0]) ? $arguments[0] : null;
-        $params = (isset($arguments[1])) ? $arguments[1] : null;
-        $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
+        if ($name === "run") {
+            $command = array_shift($arguments);
+            return $this->issueCommand($command, $arguments);
+        }
 
-        $result = $command->run($data, $params);
-
-        return $this->ensureDataCollection($result, $returnRefined);
+        return $this->issueCommand($name, $arguments);
     }
 
     /**
@@ -339,5 +337,22 @@ class Midas
         } else {
             return $data;
         }
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return RefinedData
+     */
+    protected function issueCommand($name, $arguments)
+    {
+        $command = $this->commands->fetch($name);
+        $data = isset($arguments[0]) ? $arguments[0] : null;
+        $params = (isset($arguments[1])) ? $arguments[1] : null;
+        $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
+
+        $result = $command->run($data, $params);
+
+        return $this->ensureDataCollection($result, $returnRefined);
     }
 }

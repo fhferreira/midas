@@ -173,6 +173,54 @@ class MidasTest extends \PHPUnit_Framework_TestCase
         });
     }
 
+    public function testNamespaceCommands()
+    {
+        // Namespaced Management is tested in tests/Unit/ManagerTest.php
+        $this->specify("it uses `run()` to issue commands without params", function() {
+            $midas = new Midas();
+
+            $midas->addCommand('noParams', function() {
+                return true;
+            });
+
+            $actual = $midas->run('noParams');
+            $this->assertTrue($actual, "failed to run testCommand with no args");
+        });
+
+        $this->specify("it uses `run()` to issue commands with params", function() {
+            $midas = new Midas();
+
+            $midas->addCommand('withParams', function($data, $params) {
+                return $data[0] . $params[0];
+            });
+
+            $actual = $midas->run('withParams', ["data"], ["params"]);
+            $this->assertEquals("dataparams", $actual, "failed to run command with params");
+        });
+
+        $this->specify("it uses `run()` to issue namespaced commands", function() {
+            $midas = new Midas();
+
+            $midas->addCommand('one.two.three', function() {
+                return true;
+            });
+
+            $actual = $midas->run('one.two.three');
+            $this->assertTrue($actual, "failed to run namespaced command");
+        });
+//
+//        $this->specify("it uses magic methods to issue namespaced commands", function() {
+//            $midas = new Midas();
+//
+//            $midas->addCommand('four.five.six', function($data, $params) {
+//                return $data . $params;
+//            });
+//
+//            $actual = $midas->four->five->six("data", "params");
+//            $this->assertEquals("dataparams", $actual, "failed to use magic methods to run command");
+//        });
+    }
+
     /**
      * @expectedException        InvalidArgumentException
      * @expectedExceptionMessage `data` is a reserved word
