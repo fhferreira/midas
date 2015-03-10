@@ -4,8 +4,6 @@ namespace Michaels\Midas\Test\Unit\Commands;
 use Codeception\Specify;
 use Michaels\Midas\Commands\Manager as CommandManager;
 
-/* todo: allow for any type of data and params, not just arrays */
-
 class CommandsManagerTest extends \PHPUnit_Framework_TestCase
 {
     use Specify;
