@@ -4,6 +4,8 @@ namespace Michaels\Midas\Test\Unit\Commands;
 use Codeception\Specify;
 use Michaels\Midas\Commands\Manager as CommandManager;
 
+/* todo: allow for any type of data and params, not just arrays */
+
 class CommandsManagerTest extends \PHPUnit_Framework_TestCase
 {
     use Specify;
@@ -33,6 +35,16 @@ class CommandsManagerTest extends \PHPUnit_Framework_TestCase
             });
 
             $command = $manager->fetch('closureTest');
+
+            $this->assertInstanceOf($interface, $command, "Invalid because does not implement CommandInterface");
+        });
+
+        $this->specify("returns a valid namespaced command on fetch()", function() use ($manager, $interface) {
+            $manager->add('one.two.three', function($data, $params) {
+                return true;
+            });
+
+            $command = $manager->fetch('one.two.three');
 
             $this->assertInstanceOf($interface, $command, "Invalid because does not implement CommandInterface");
         });
