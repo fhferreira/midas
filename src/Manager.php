@@ -38,6 +38,7 @@ class Manager implements ArrayAccess
         }
 
         // Namespaced
+        // todo: extract this to a method
         if (strpos($alias, ".")) {
             $loc = &$this->items;
             foreach (explode('.', $alias) as $step) {
@@ -45,7 +46,7 @@ class Manager implements ArrayAccess
             }
             $loc = $algorithm;
 
-        // Singular
+            // Singular
         } else {
             $this->items[$alias] = $algorithm;
         }
