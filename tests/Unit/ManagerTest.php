@@ -123,9 +123,6 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('One\Class', $manager['one'], "Failed to add `One\\Class` through ArrayAccess.");
     }
 
-    /**
-     * Test that true does in fact equal true
-     */
     public function testAddAndGetNamespacedItems()
     {
         $manager = new Manager();
@@ -153,5 +150,19 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('One\Two\Four', $four, "Failed get second deeply namespaced value.");
 
         $this->assertFalse($manager->get('does.not.exist'));
+
+//        $this->specify("it adds a command to an existing namespace", function () use ($midas) {
+//            $midas->addCommand('exists.two', 'Class');
+//        });
+    }
+
+    public function testCheckForNamespacedItems()
+    {
+        $manager = new Manager();
+
+        $manager->add('one.two.three', 'One\Two\Three');
+
+        $this->assertTrue($manager->exists('one.two.three'), "failed to confirm existence of namespaced item");
+        $this->assertFalse($manager->exists('four.five.six'), 'failed to confirm non-existence of namespaced item');
     }
 }

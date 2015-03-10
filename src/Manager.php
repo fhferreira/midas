@@ -62,15 +62,7 @@ class Manager implements ArrayAccess
     {
         // Namespaced
         if (strpos($alias, ".")) {
-            $loc = &$this->items;
-            foreach (explode('.', $alias) as $step) {
-                if (isset($loc[$step])) {
-                    $loc = &$loc[$step];
-                } else {
-                    return false;
-                }
-            }
-            return $loc;
+            return $this->findNamespace($alias, $this->items);
         }
 
         // Non-namespaced, doesn't exist
@@ -138,6 +130,10 @@ class Manager implements ArrayAccess
      */
     public function exists($alias)
     {
+        if (strpos($alias, ".")) {
+            return (bool) $this->findNamespace($alias, $this->items);
+        }
+
         return (isset($this->items[$alias]));
     }
 
@@ -201,5 +197,22 @@ class Manager implements ArrayAccess
     public function offsetUnset($offset)
     {
         $this->remove($offset);
+    }
+
+    /**
+     * @param $chain
+     * @param $loc
+     * @return array|bool
+     */
+    protected function findNamespace($chain, &$loc)
+    {
+        foreach (explode('.', $chain) as $step) {
+            if (isset($loc[$step])) {
+                $loc = &$loc[$step];
+            } else {
+                return false;
+            }
+        }
+        return $loc;
     }
 }
