@@ -2,8 +2,17 @@
 
 All Notable changes to `Midas` will be documented in this file
 
-## NEXT - 2015-03-05
 
+## v0.3.1 - NEXT
+### Added
+- Namespace commands through Midas run() and magic methods
+
+### Bugfix
+- Fetch command checks for namespace first
+- Manager::exists() checks for namespaced items first
+
+
+## v0.3 - 2015-03-05
 ### Added
 - Process Commands and Return Data
 - Manage Commands
@@ -12,14 +21,9 @@ All Notable changes to `Midas` will be documented in this file
 - Abstract Algorithms
 - Abstract Managers
 
-### Deprecated
-- Nothing
 
-### Fixed
-- Nothing
-
-### Removed
-- Nothing
-
-### Security
-- Nothing
+## v0.2 - 2015-02-28
+### Added
+- Midas Framework
+- Init Repo
+- Initial Tests
