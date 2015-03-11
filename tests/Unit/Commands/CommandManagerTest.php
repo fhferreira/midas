@@ -65,5 +65,10 @@ class CommandsManagerTest extends \PHPUnit_Framework_TestCase
             $manager->add('invalidClassTest', 'Michaels\Midas\Test\Stubs\InvalidClassBasedCommand');
             $manager->fetch('invalidClassTest');
         }, ['throws' => 'Michaels\Midas\Commands\InvalidCommandException']);
+
+        $this->specify("throws Exception when trying to fetch a namespace", function () use ($manager) {
+            $manager->add('one.two.three', function(){});
+            $manager->fetch('one.two');
+        }, ['throws' => 'Michaels\Midas\Commands\InvalidCommandException']);
     }
 }
