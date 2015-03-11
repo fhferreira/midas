@@ -3,12 +3,12 @@
 namespace Michaels\Midas\Test\Integration;
 
 use Codeception\Specify;
-use Michaels\Midas\Commands\CommandNotFoundException;
 use Michaels\Midas\Midas;
 use Michaels\Midas\Test\Stubs\ClassBasedCommand;
 
 class MidasTest extends \PHPUnit_Framework_TestCase
 {
+
     use Specify;
 
     public function testConfigureMidas()
@@ -49,7 +49,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
         $this->specify("it adds commands", function () use ($midas) {
             $midas->addCommand('classTest1', 'Michaels\Midas\Test\Stubs\ClassBasedCommand');
             $midas->addCommand('objectTest1', new ClassBasedCommand());
-            $midas->addCommand('closureTest1', function ($data, array $params = null) {
+            $midas->addCommand('closureTest1', function () {
                 return TRUE;
             });
 
@@ -92,7 +92,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->specify("it fetches command", function () use ($midas) {
-            $midas->addCommand('fetchedCommand', function($data, $params){
+            $midas->addCommand('fetchedCommand', function(){
                 return true;
             });
 
@@ -241,7 +241,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        InvalidArgumentException
+     * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage `data` is a reserved word
      */
     public function testThrowsExceptionForReservedWord()
