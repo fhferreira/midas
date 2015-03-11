@@ -199,7 +199,7 @@ class Midas
      * Return a command as an instance of CommandInterface
      *
      * @param $alias
-     * @return Algorithms\CommandInterface
+     * @return CommandInterface
      */
     public function fetchCommand($alias)
     {

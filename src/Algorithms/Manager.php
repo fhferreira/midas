@@ -10,7 +10,7 @@ abstract class Manager extends BaseManager
      * Handles a request for a not found algorithm.
      * Typically, throw some instance of AlgorithmNotFoundException
      *
-     * @param $alias name of the algorithm not found
+     * @param string $alias name of the algorithm not found
      * @return void
      */
     abstract protected function handleNotFound($alias);
