@@ -309,21 +309,31 @@ class Midas
      *
      * This magic method processes commands.
      *
-     * @param string $name
+     * @param string $command
      * @param array $arguments
      * @return RefinedData
      */
-    public function __call($name, $arguments)
+    public function __call($command, $arguments)
     {
-        $command = $this->commands->fetch($name);
-        $data = isset($arguments[0]) ? $arguments[0] : null;
-        $params = (isset($arguments[1])) ? $arguments[1] : null;
-        $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
+        if ($command === "run") {
+            $command = array_shift($arguments);
 
-        $result = $command->run($data, $params);
+        } elseif ($this->currentCommandNs) {
+            $command = $this->currentCommandNs . '.' . $command;
+        }
 
-        return $this->ensureDataCollection($result, $returnRefined);
+        return $this->issueCommand($command, $arguments);
     }
+
+    public function __get($name)
+    {
+        $dot = ($this->currentCommandNs === false) ? '' : '.';
+        $this->currentCommandNs .= $dot . $name;
+
+        return $this;
+    }
+
+    protected $currentCommandNs = false;
 
     /**
      * Ensure that returned data is an instance of RefinedData
@@ -339,5 +349,24 @@ class Midas
         } else {
             return $data;
         }
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return RefinedData
+     */
+    protected function issueCommand($name, $arguments)
+    {
+        $command = $this->commands->fetch($name);
+        $data = isset($arguments[0]) ? $arguments[0] : null;
+        $params = (isset($arguments[1])) ? $arguments[1] : null;
+        $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
+
+        $result = $command->run($data, $params);
+
+        $this->currentCommandNs = false; // reset the command namespace
+
+        return $this->ensureDataCollection($result, $returnRefined);
     }
 }

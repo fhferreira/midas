@@ -96,6 +96,24 @@ $result = $midas->filter($data, $params); // etc
 ```
 This is all done with magic methods. There are some reserved words.
 
+#### Namespaced Commands
+You can also namespace your commands with dot notation. For instance, `one.two.three` and `a.b.four` are entirely different commands.
+This allows you to vendor prefix your commands just like composer packages. It is reccomended to use the same structure `vendor.package.command`.
+
+To issue or run a namespaced command, you have two options. First, you can use the `run()` method.
+```php
+$midas->addCommand('some.cool.example', function($data, $params) { return $data });
+$result = $midas->run('some.cool.example', $data, $params);
+```
+
+You may also use magic methods to get at it directly.
+```php
+$midas->addCommand('some.cool.example', function($data, $params) { return $data });
+$result = $midas->some->cool->example($data, $params);
+```
+
+Both of the above will work identically.
+
 ### Save and Manage Datasets
 You can also save sets of data to be reused. Anytime you have to manage something, the API is the similar as managing commands. In this case, only `fetch()` works differently.
 ```php
