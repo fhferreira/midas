@@ -8,7 +8,6 @@ use Michaels\Midas\Test\Stubs\ClassBasedCommand;
 
 class MidasTest extends \PHPUnit_Framework_TestCase
 {
-
     use Specify;
 
     public function testConfigureMidas()
