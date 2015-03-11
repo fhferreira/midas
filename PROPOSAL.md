@@ -219,7 +219,7 @@ $two = $data->get(); // get's latest result
   * Ask a question
   * Chain questions
   * Use conjunctions
-  * Wrap questions in opperations
+  * Wrap questions in operations
  
 #### v0.5 Streaming A
   * Stream `$data` via an array of commands and algorightms

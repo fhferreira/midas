@@ -2,7 +2,7 @@
 
 All Notable changes to `Midas` will be documented in this file
 
-## NEXT - 2015-03-05
+## v0.3 - 2015-03-05
 
 ### Added
 - Process Commands and Return Data
