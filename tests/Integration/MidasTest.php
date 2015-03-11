@@ -3,6 +3,7 @@
 namespace Michaels\Midas\Test\Integration;
 
 use Codeception\Specify;
+use Michaels\Midas\Commands\CommandNotFoundException;
 use Michaels\Midas\Midas;
 use Michaels\Midas\Test\Stubs\ClassBasedCommand;
 
@@ -208,24 +209,42 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $actual = $midas->run('one.two.three');
             $this->assertTrue($actual, "failed to run namespaced command");
         });
-//
-//        $this->specify("it uses magic methods to issue namespaced commands", function() {
-//            $midas = new Midas();
-//
-//            $midas->addCommand('four.five.six', function($data, $params) {
-//                return $data . $params;
-//            });
-//
-//            $actual = $midas->four->five->six("data", "params");
-//            $this->assertEquals("dataparams", $actual, "failed to use magic methods to run command");
-//        });
+
+        $this->specify("it throws an exception from `run()` if no command", function() {
+            $midas = new Midas();
+
+            $midas->run('does.not.exist');
+        }, ['throws' => 'Michaels\Midas\Commands\CommandNotFoundException']);
+
+        $this->specify("it uses magic methods to issue namespaced commands", function() {
+            $midas = new Midas();
+
+            $midas->addCommand('four.five.six', function($data, $params) {
+                return $data[0] . $params[0];
+            });
+
+            $midas->addCommand('seven.eight.nine', function($data, $params) {
+                return $data[0] . $params[0];
+            });
+
+            $firstActual = $midas->four->five->six(["four-five-"], ["six"]);
+            $secondActual = $midas->seven->eight->nine(["seven-eight-"], ["nine"]);
+            $this->assertEquals("four-five-six", $firstActual, "failed to use magic methods to run command");
+            $this->assertEquals("seven-eight-nine", $secondActual, "failed to reset namespace and run seccond command");
+        });
+
+        $this->specify("it throws an exception from magic method if no command", function() {
+            $midas = new Midas();
+
+            $midas->does->not->exist();
+        }, ['throws' => 'Michaels\Midas\Commands\CommandNotFoundException']);
     }
 
     /**
      * @expectedException        InvalidArgumentException
      * @expectedExceptionMessage `data` is a reserved word
      */
-    public function testCommandExceptions()
+    public function testThrowsExceptionForReservedWord()
     {
         $midas = new Midas();
 

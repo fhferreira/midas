@@ -309,19 +309,31 @@ class Midas
      *
      * This magic method processes commands.
      *
-     * @param string $name
+     * @param string $command
      * @param array $arguments
      * @return RefinedData
      */
-    public function __call($name, $arguments)
+    public function __call($command, $arguments)
     {
-        if ($name === "run") {
+        if ($command === "run") {
             $command = array_shift($arguments);
-            return $this->issueCommand($command, $arguments);
+
+        } elseif ($this->currentCommandNs) {
+            $command = $this->currentCommandNs . '.' . $command;
         }
 
-        return $this->issueCommand($name, $arguments);
+        return $this->issueCommand($command, $arguments);
     }
+
+    public function __get($name)
+    {
+        $dot = ($this->currentCommandNs === false) ? '' : '.';
+        $this->currentCommandNs .= $dot . $name;
+
+        return $this;
+    }
+
+    protected $currentCommandNs = false;
 
     /**
      * Ensure that returned data is an instance of RefinedData
@@ -352,6 +364,8 @@ class Midas
         $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
 
         $result = $command->run($data, $params);
+
+        $this->currentCommandNs = false; // reset the command namespace
 
         return $this->ensureDataCollection($result, $returnRefined);
     }
