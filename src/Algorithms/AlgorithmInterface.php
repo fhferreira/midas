@@ -9,5 +9,5 @@ interface AlgorithmInterface
      * @param array $params
      * @return mixed
      */
-    public function run($data, array $params = null);
+    public function run($data, $params = null);
 }
