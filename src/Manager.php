@@ -29,7 +29,7 @@ class Manager implements ArrayAccess
      */
     public function add($alias, $algorithm = null)
     {
-        // Multiple adds
+        // Are we adding multiple algorithms?
         if (is_array($alias)) {
             foreach ($alias as $key => $value) {
                 $this->add($key, $value);
@@ -37,20 +37,29 @@ class Manager implements ArrayAccess
             return $this;
         }
 
-        // Namespaced
-        if (strpos($alias, ".")) {
-            $loc = &$this->items;
-            foreach (explode('.', $alias) as $step) {
-                $loc = &$loc[$step];
-            }
-            $loc = $algorithm;
+        // No, we are adding a single algorithm
+        if ($this->isNamespaced($alias)) {
+            $this->addToNamespace($alias, $algorithm, $this->items);
 
-            // Singular
         } else {
             $this->items[$alias] = $algorithm;
         }
 
         return $this;
+
+//        if ($this->isNamespaced($alias)) {
+//            $loc = &$this->items;
+//            foreach (explode('.', $alias) as $step) {
+//                $loc = &$loc[$step];
+//            }
+//            $loc = $algorithm;
+//
+//            // Singular
+//        } else {
+//            $this->items[$alias] = $algorithm;
+//        }
+//
+//        return $this;
     }
 
     /**
@@ -60,17 +69,14 @@ class Manager implements ArrayAccess
      */
     public function get($alias)
     {
-        // Namespaced
-        if (strpos($alias, ".")) {
+        if ($this->isNamespaced($alias)) {
             return $this->findNamespace($alias, $this->items);
         }
 
-        // Non-namespaced, doesn't exist
         if (!isset($this->items[$alias])) {
             return false;
         }
 
-        // Non-namespaced, does exist
         return $this->items[$alias];
     }
 
@@ -214,5 +220,27 @@ class Manager implements ArrayAccess
             }
         }
         return $loc;
+    }
+
+    /**
+     * @param $alias
+     * @return bool|int
+     */
+    protected function isNamespaced($alias)
+    {
+        return strpos($alias, ".");
+    }
+
+    /**
+     * @param $alias
+     * @param $algorithm
+     * @param $loc
+     */
+    protected function addToNamespace($alias, $algorithm, &$loc)
+    {
+        foreach (explode('.', $alias) as $step) {
+            $loc = &$loc[$step];
+        }
+        $loc = $algorithm;
     }
 }
