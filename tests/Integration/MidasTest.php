@@ -3,6 +3,7 @@
 namespace Michaels\Midas\Test\Integration;
 
 use Codeception\Specify;
+use Michaels\Midas\Commands\CommandNotFoundException;
 use Michaels\Midas\Midas;
 use Michaels\Midas\Test\Stubs\ClassBasedCommand;
 
@@ -48,7 +49,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
         $this->specify("it adds commands", function () use ($midas) {
             $midas->addCommand('classTest1', 'Michaels\Midas\Test\Stubs\ClassBasedCommand');
             $midas->addCommand('objectTest1', new ClassBasedCommand());
-            $midas->addCommand('closureTest1', function () {
+            $midas->addCommand('closureTest1', function ($data, array $params = null) {
                 return TRUE;
             });
 
@@ -91,7 +92,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->specify("it fetches command", function () use ($midas) {
-            $midas->addCommand('fetchedCommand', function(){
+            $midas->addCommand('fetchedCommand', function($data, $params){
                 return true;
             });
 
@@ -154,28 +155,6 @@ class MidasTest extends \PHPUnit_Framework_TestCase
 
             $actual = $midas->text("test", ['text' => 'sentence']);
             $this->assertEquals('test sentence.', $actual, "failed to process `text` command with named params");
-        });
-
-        $this->specify("it accepts a variety data types", function() use ($midas) {
-            $midas->addCommand('dataTypes', function( $data ){
-                return $data;
-            });
-
-            $this->assertTrue(is_int($midas->dataTypes(3)), "failed to accept an `int` as data");
-            $this->assertTrue(is_string($midas->dataTypes("string")), "failed to accept an `string` as data");
-            $this->assertTrue(is_bool($midas->dataTypes(false)), "failed to accept an `bool` as data");
-            $this->assertTrue(is_array($midas->dataTypes([1,2,3], null, false)), "failed to accept an `array` as data");
-        });
-
-        $this->specify("it accepts a variety parameter types", function() use ($midas) {
-            $midas->addCommand('paramTypes', function( $data, $params ){
-                return $params;
-            });
-
-            $this->assertTrue(is_int($midas->paramTypes(null, 3)), "failed to accept an `int` as param");
-            $this->assertTrue(is_string($midas->paramTypes(null, "string")), "failed to accept an `string` as param");
-            $this->assertTrue(is_bool($midas->paramTypes(null, false)), "failed to accept an `bool` as param");
-            $this->assertTrue(is_array($midas->paramTypes(null, [1,2,3], false)), "failed to accept an `array` as param");
         });
 
         $this->specify("it returns complex data as a DataCollection", function() use ($midas) {
@@ -262,7 +241,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        \InvalidArgumentException
+     * @expectedException        InvalidArgumentException
      * @expectedExceptionMessage `data` is a reserved word
      */
     public function testThrowsExceptionForReservedWord()
