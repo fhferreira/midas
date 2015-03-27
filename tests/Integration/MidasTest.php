@@ -157,6 +157,28 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals('test sentence.', $actual, "failed to process `text` command with named params");
         });
 
+        $this->specify("it accepts a variety data types", function() use ($midas) {
+            $midas->addCommand('dataTypes', function( $data ){
+                return $data;
+            });
+
+            $this->assertTrue(is_int($midas->dataTypes(3)), "failed to accept an `int` as data");
+            $this->assertTrue(is_string($midas->dataTypes("string")), "failed to accept an `string` as data");
+            $this->assertTrue(is_bool($midas->dataTypes(false)), "failed to accept an `bool` as data");
+            $this->assertTrue(is_array($midas->dataTypes([1,2,3], null, false)), "failed to accept an `array` as data");
+        });
+
+        $this->specify("it accepts a variety parameter types", function() use ($midas) {
+            $midas->addCommand('paramTypes', function( $data, $params ){
+                return $params;
+            });
+
+            $this->assertTrue(is_int($midas->paramTypes(null, 3)), "failed to accept an `int` as param");
+            $this->assertTrue(is_string($midas->paramTypes(null, "string")), "failed to accept an `string` as param");
+            $this->assertTrue(is_bool($midas->paramTypes(null, false)), "failed to accept an `bool` as param");
+            $this->assertTrue(is_array($midas->paramTypes(null, [1,2,3], false)), "failed to accept an `array` as param");
+        });
+
         $this->specify("it returns complex data as a DataCollection", function() use ($midas) {
             $actual = $midas->complexArray(null);
 
