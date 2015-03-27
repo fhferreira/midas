@@ -6,6 +6,7 @@ use Michaels\Midas\Algorithms\Manager as AlgorithmManager;
 class Manager extends AlgorithmManager
 {
     /**
+     * Throw exception if command is not found
      * @inheritdoc
      */
     protected function handleNotFound($alias)
@@ -14,6 +15,7 @@ class Manager extends AlgorithmManager
     }
 
     /**
+     * Throw exception if command is not valid
      * @inheritdoc
      */
     protected function handleInvalid($algorithm)
@@ -23,6 +25,7 @@ class Manager extends AlgorithmManager
     }
 
     /**
+     * Creates a Generic Command instead of Algorithm
      * @inheritdoc
      */
     protected function createGeneric($closure)
@@ -31,6 +34,7 @@ class Manager extends AlgorithmManager
     }
 
     /**
+     * Validates as a Command instead of an Algorithm
      * @inheritdoc
      */
     public function validate($algorithm)

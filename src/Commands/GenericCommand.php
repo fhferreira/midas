@@ -32,7 +32,7 @@ class GenericCommand implements CommandInterface
     /**
      * @inheritdoc
      */
-    public function run($data, array $params = null)
+    public function run($data, $params = null)
     {
         $closure = $this->closure;
         $result = $closure($data, $params, $this);

@@ -6,7 +6,7 @@ use Michaels\Midas\Commands\CommandInterface;
 class ClassBasedCommand implements CommandInterface
 {
 
-    public function run($data, array $params = null)
+    public function run($data, $params = null)
     {
         return true;
     }

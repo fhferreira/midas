@@ -25,10 +25,14 @@ class Midas
      * @var array
      */
     protected $defaultConfig = [
+        /* todo: Throw exceptions for reserved words */
         'reserved_words' => [
             'is', 'does', 'operation', 'command', 'algorithm', 'data', 'parameter', 'midas',
             'stream', 'pipe', 'end', 'result', 'out', 'output', 'finish', 'solve', 'process', 'solveFor'
         ],
+
+        /* todo: Use this config for exceptions or silent */
+        'throw_exceptions' => true, // false for silent
         'test_dummy' => true
     ];
 
@@ -117,10 +121,6 @@ class Midas
      */
     public function addCommand($alias, $command)
     {
-        if (in_array($alias, $this->config('reserved_words'))) {
-            throw new \InvalidArgumentException("`$alias` is a reserved word");
-        }
-
         $this->commands->add($alias, $command);
     }
 
@@ -185,7 +185,7 @@ class Midas
     }
 
     /**
-     * Check for the existence of a command
+     * Check for the existance of a command
      *
      * @param string $alias
      * @return bool
@@ -199,7 +199,7 @@ class Midas
      * Return a command as an instance of CommandInterface
      *
      * @param $alias
-     * @return CommandInterface
+     * @return Algorithms\CommandInterface
      */
     public function fetchCommand($alias)
     {
@@ -309,31 +309,22 @@ class Midas
      *
      * This magic method processes commands.
      *
-     * @param string $command
+     * @param string $name
      * @param array $arguments
      * @return RefinedData
      */
-    public function __call($command, $arguments)
+    public function __call($name, $arguments)
     {
-        if ($command === "run") {
-            $command = array_shift($arguments);
+        $command = $this->commands->fetch($name);
+        $data = $arguments[0];
+        $params = (isset($arguments[1])) ? $arguments[1] : null;
+        $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
 
-        } elseif ($this->currentCommandNs) {
-            $command = $this->currentCommandNs . '.' . $command;
-        }
+        /* todo: Pass an instance of the command as well for helpers */
+        $result = $command->run($data, $params, $command);
 
-        return $this->issueCommand($command, $arguments);
+        return $this->ensureDataCollection($result, $returnRefined);
     }
-
-    public function __get($name)
-    {
-        $dot = ($this->currentCommandNs === false) ? '' : '.';
-        $this->currentCommandNs .= $dot . $name;
-
-        return $this;
-    }
-
-    protected $currentCommandNs = false;
 
     /**
      * Ensure that returned data is an instance of RefinedData
@@ -344,29 +335,10 @@ class Midas
      */
     private function ensureDataCollection($data, $returnRefined)
     {
-        if (is_array($data) && $returnRefined) {
+        if (is_array($data) and $returnRefined) {
             return new RefinedData($data);
         } else {
             return $data;
         }
-    }
-
-    /**
-     * @param $name
-     * @param $arguments
-     * @return RefinedData
-     */
-    protected function issueCommand($name, $arguments)
-    {
-        $command = $this->commands->fetch($name);
-        $data = isset($arguments[0]) ? $arguments[0] : null;
-        $params = (isset($arguments[1])) ? $arguments[1] : null;
-        $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
-
-        $result = $command->run($data, $params);
-
-        $this->currentCommandNs = false; // reset the command namespace
-
-        return $this->ensureDataCollection($result, $returnRefined);
     }
 }
