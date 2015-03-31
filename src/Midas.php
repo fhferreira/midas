@@ -328,6 +328,11 @@ class Midas
         return $this->packs->add($pack, $namespace);
     }
 
+    public function load($pack)
+    {
+        return $this->addPack($pack);
+    }
+
     /**
      * Handle commands issued
      *
