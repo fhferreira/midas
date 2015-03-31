@@ -58,6 +58,7 @@ class Manager
     {
         $type = $this->fromFlag['type'];
         $alias = $this->fromFlag['alias'];
+        $namespace = (isset($this->fromFlag['namespace'])) ? $this->fromFlag['namespace'] : $pack;
 
         if ($alias === false) {
             // We want all the algorithms of this type
@@ -69,9 +70,20 @@ class Manager
         }
 
         // Add the commands
-        $this->addFromArray($manifest, $pack);
+        $this->addFromArray($manifest, $namespace);
 
         $this->fromFlag = null;
+    }
+
+    public function under($namespace = false)
+    {
+        $this->fromFlag['namespace'] = $namespace;
+        return $this;
+    }
+
+    public function toTop()
+    {
+        return $this->under(false);
     }
 
     /**
@@ -79,11 +91,13 @@ class Manager
      * @param $namespace
      * @return bool
      */
-    private function addFromArray($pack, $namespace)
+    private function addFromArray($pack, $namespace = false)
     {
+        $prefix = ($namespace === false) ? '' : $namespace . ".";
+
         foreach ($pack as $type => $manifest) {
             foreach ($manifest as $alias => $algorithm) {
-                $this->midas->addCommand($namespace . "." . $alias, $algorithm);
+                $this->midas->addCommand($prefix . $alias, $algorithm);
             }
         }
 
