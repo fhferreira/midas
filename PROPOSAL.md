@@ -126,7 +126,7 @@ $dataset = $midas->getDataSet('dataset', false); // Returns a ResultDataSet, not
 /* Algorithm Packs */
 // Composer packages with a valid MidasProvider::provides()
 
-$midas->addX()->from('vendor.pack.algorithm'); // add a specific command
+$midas->addX('algorithm')->from('vendor.pack'); // add a specific command
 $midas->addXs()->from('vendor.pack'); // add all commands from pack
 $midas->addPack('vendor.pack'); // add all algorithms from pack
 
@@ -136,15 +136,15 @@ Class MidasPovider
     {
         return [
             'commands' => [
-                'com1' => $alg,
-                'com2' => $alg,
+                'com1' => 'Vendor\Pack\Commands\Command',
+                'com2' => 'vendor\Pack\Commands\AnotherCommand',
             ],
             'questions' => [],
         ]
     }
 }
 
-// A pack must be PSR-4: Vendor\Pack\Command
+// A pack must be PSR-4: Vendor\Pack
 
 /* Streaming and Pipes */
 $midas->stream($data, [
@@ -219,7 +219,7 @@ $two = $data->get(); // get's latest result
   * Ask a question
   * Chain questions
   * Use conjunctions
-  * Wrap questions in opperations
+  * Wrap questions in operations
  
 #### v0.5 Streaming A
   * Stream `$data` via an array of commands and algorightms

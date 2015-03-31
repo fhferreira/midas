@@ -199,7 +199,7 @@ class Midas
      * Return a command as an instance of CommandInterface
      *
      * @param $alias
-     * @return Algorithms\CommandInterface
+     * @return \Michaels\Midas\Commands\CommandInterface
      */
     public function fetchCommand($alias)
     {
@@ -304,6 +304,36 @@ class Midas
         return $this->data->get($alias);
     }
 
+    public function addPack($pack, $namespace = false)
+    {
+        if (is_array($pack) && $namespace) {
+            return $this->addPackArray($pack, $namespace);
+        }
+
+        $namespace = $pack;
+
+        // Create the Class Namespace
+        $pieces = explode(".", $pack);
+        array_walk($pieces, function(&$piece) {
+            $piece = ucfirst($piece);
+        });
+        $classNamespace = implode("\\", $pieces);
+
+        // Get from provider
+        $provider = $classNamespace . "\\MidasProvider";
+        /** @noinspection PhpUndefinedMethodInspection */
+        $pack = $provider::provides();
+
+        // Add each command
+        foreach ($pack as $type => $manifest) {
+            foreach ($manifest as $alias => $command) {
+                $manifest[$alias] = $namespace.".".$manifest[$alias];
+            }
+        }
+
+        return $this->addPackArray($pack, $namespace);
+    }
+
     /**
      * Handle commands issued
      *
@@ -368,5 +398,20 @@ class Midas
         $this->currentCommandNs = false; // reset the command namespace
 
         return $this->ensureDataCollection($result, $returnRefined);
+    }
+
+    /**
+     * @param $pack
+     * @param $namespace
+     */
+    protected function addPackArray($pack, $namespace)
+    {
+        foreach ($pack as $type => $manifest) {
+            foreach ($manifest as $alias => $algorithm) {
+                $this->addCommand($namespace . "." . $alias, $algorithm);
+            }
+        }
+
+        return true;
     }
 }
