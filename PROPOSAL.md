@@ -130,6 +130,8 @@ $midas->addX('algorithm')->from('vendor.pack'); // add a specific command
 $midas->addXs()->from('vendor.pack'); // add all commands from pack
 $midas->addPack('vendor.pack'); // add all algorithms from pack
 
+$midas->vendor->pack->command();
+
 Class MidasPovider
 {
     public static function provides()

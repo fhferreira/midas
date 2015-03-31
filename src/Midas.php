@@ -6,6 +6,8 @@ use Michaels\Midas\Commands\CommandInterface;
 use Michaels\Midas\Commands\Manager as CommandManager;
 use Michaels\Midas\Data\Manager as DataManager;
 use Michaels\Midas\Data\RefinedData;
+use Michaels\Midas\Packs\Manager as PackManager;
+use Michaels\Midas\Manager as ConfigManager;
 
 /**
  * Primary API and entry point
@@ -20,6 +22,9 @@ class Midas
     /** @var DataManager **/
     protected $data;
 
+    /** @var  PackManager */
+    protected $packs;
+
     /**
      * Default configuration
      * @var array
@@ -29,7 +34,8 @@ class Midas
             'is', 'does', 'operation', 'command', 'algorithm', 'data', 'parameter', 'midas',
             'stream', 'pipe', 'end', 'result', 'out', 'output', 'finish', 'solve', 'process', 'solveFor'
         ],
-        'test_dummy' => true
+        'test_dummy' => true,
+        'load_standard_pack' => true
     ];
 
     /**
@@ -41,7 +47,8 @@ class Midas
     {
         $this->commands = new CommandManager();
         $this->data = new DataManager();
-        $this->config = new Manager(array_merge($this->defaultConfig, $config));
+        $this->config = new ConfigManager(array_merge($this->defaultConfig, $config));
+        $this->packs = new PackManager($this);
     }
 
     /**
@@ -113,15 +120,21 @@ class Midas
      * Add a command to the Command Manager
      *
      * @param string $alias
-     * @param string|Closure|CommandInterface $command
+     * @param mixed $command
+     * @return $this
      */
-    public function addCommand($alias, $command)
+    public function addCommand($alias, $command = false)
     {
         if (in_array($alias, $this->config('reserved_words'))) {
             throw new \InvalidArgumentException("`$alias` is a reserved word");
         }
 
+        if ($command === false) {
+            return $this->packs->addFromPack('commands', $alias);
+        }
+
         $this->commands->add($alias, $command);
+        return $this;
     }
 
     /**
@@ -306,32 +319,7 @@ class Midas
 
     public function addPack($pack, $namespace = false)
     {
-        if (is_array($pack) && $namespace) {
-            return $this->addPackArray($pack, $namespace);
-        }
-
-        $namespace = $pack;
-
-        // Create the Class Namespace
-        $pieces = explode(".", $pack);
-        array_walk($pieces, function(&$piece) {
-            $piece = ucfirst($piece);
-        });
-        $classNamespace = implode("\\", $pieces);
-
-        // Get from provider
-        $provider = $classNamespace . "\\MidasProvider";
-        /** @noinspection PhpUndefinedMethodInspection */
-        $pack = $provider::provides();
-
-        // Add each command
-        foreach ($pack as $type => $manifest) {
-            foreach ($manifest as $alias => $command) {
-                $manifest[$alias] = $namespace.".".$manifest[$alias];
-            }
-        }
-
-        return $this->addPackArray($pack, $namespace);
+        return $this->packs->add($pack, $namespace);
     }
 
     /**
@@ -398,20 +386,5 @@ class Midas
         $this->currentCommandNs = false; // reset the command namespace
 
         return $this->ensureDataCollection($result, $returnRefined);
-    }
-
-    /**
-     * @param $pack
-     * @param $namespace
-     */
-    protected function addPackArray($pack, $namespace)
-    {
-        foreach ($pack as $type => $manifest) {
-            foreach ($manifest as $alias => $algorithm) {
-                $this->addCommand($namespace . "." . $alias, $algorithm);
-            }
-        }
-
-        return true;
     }
 }
