@@ -42,22 +42,6 @@ class Manager
         return $this->addFromArray($manifest, $namespace);
     }
 
-    /**
-     * @param $pack ['type' => ['alias' => algorithm]]
-     * @param $namespace
-     * @return bool
-     */
-    protected function addFromArray($pack, $namespace)
-    {
-        foreach ($pack as $type => $manifest) {
-            foreach ($manifest as $alias => $algorithm) {
-                $this->midas->addCommand($namespace . "." . $alias, $algorithm);
-            }
-        }
-
-        return true;
-    }
-
     public function addFromPack($type, $alias)
     {
         $this->fromFlag = ['type' => $type, 'alias' => $alias];
@@ -75,10 +59,12 @@ class Manager
         $type = $this->fromFlag['type'];
         $alias = $this->fromFlag['alias'];
 
-        // We want all the algorithms of this type
         if ($alias === false) {
+            // We want all the algorithms of this type
             $manifest[$type] = $this->getFromProvider($pack, $type, $alias);
+
         } else {
+            // We want a specific command
             $manifest[$type][$alias] = $this->getFromProvider($pack, $type, $alias);
         }
 
@@ -88,11 +74,27 @@ class Manager
         $this->fromFlag = null;
     }
 
+    /**
+     * @param $pack ['type' => ['alias' => algorithm]]
+     * @param $namespace
+     * @return bool
+     */
+    private function addFromArray($pack, $namespace)
+    {
+        foreach ($pack as $type => $manifest) {
+            foreach ($manifest as $alias => $algorithm) {
+                $this->midas->addCommand($namespace . "." . $alias, $algorithm);
+            }
+        }
+
+        return true;
+    }
+
     private function getFromProvider($pack, $type, $alias)
     {
         $manifest = $this->getManifest($pack);
 
-        if (!$alias === false) {
+        if ($alias !== false) {
             return $manifest[$type][$alias];
         }
 
