@@ -417,7 +417,6 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $midas = new Midas();
 
             $midas->addCommands()->from('michaels.midas.test.stubs.pack');
-            $midas->addCommand('command2')->from('michaels.midas.test.stubs.pack');
 
             $this->assertTrue($midas->isCommand('michaels.midas.test.stubs.pack.command1'), 'failed add first command');
             $this->assertTrue($midas->isCommand('michaels.midas.test.stubs.pack.command2'), 'failed add second command');
