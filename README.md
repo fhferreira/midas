@@ -4,7 +4,7 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Build Status](https://img.shields.io/travis/chrismichaels84/midas/master.svg?style=flat-square)](https://travis-ci.org/chrismichaels84/midas)
 [![Coverage Status](https://coveralls.io/repos/chrismichaels84/midas/badge.svg?branch=master)](https://coveralls.io/r/chrismichaels84/midas?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/league/url.svg?style=flat-square)](https://packagist.org/packages/michaels/midas)
+[![Total Downloads](https://img.shields.io/packagist/dt/michaels/midas.svg?style=flat-square)](https://packagist.org/packages/michaels/midas)
 
 Framework-agnostic manager for data processing, management, and analysis. Turn raw data into gold.
 
