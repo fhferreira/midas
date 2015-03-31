@@ -413,8 +413,14 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue($midas->isCommand('michaels.midas.test.stubs.pack.command2'), 'failed to set specific desired command ');
         });
 
-//        $midas->addX('algorithm')->from('vendor.pack'); // add a specific command
-//            $midas->addXs()->from('vendor.pack'); // add all commands from pack
-//            $midas->addPack('vendor.pack'); // add all algorithms from pack
+        $this->specify("it adds all commands from a pack", function() {
+            $midas = new Midas();
+
+            $midas->addCommands()->from('michaels.midas.test.stubs.pack');
+            $midas->addCommand('command2')->from('michaels.midas.test.stubs.pack');
+
+            $this->assertTrue($midas->isCommand('michaels.midas.test.stubs.pack.command1'), 'failed add first command');
+            $this->assertTrue($midas->isCommand('michaels.midas.test.stubs.pack.command2'), 'failed add second command');
+        });
     }
 }

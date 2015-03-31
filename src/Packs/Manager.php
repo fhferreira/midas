@@ -43,7 +43,7 @@ class Manager
     }
 
     /**
-     * @param $pack
+     * @param $pack ['type' => ['alias' => algorithm]]
      * @param $namespace
      * @return bool
      */
@@ -64,19 +64,39 @@ class Manager
         return $this;
     }
 
+    public function addTypeFromPack($type)
+    {
+        $this->fromFlag = ['type' => $type, 'alias' => false];
+        return $this;
+    }
+
     public function from($pack)
     {
-        // $midas->addCommand('alias')->from('vendor.pack');
-        $this->midas->addCommand(
-            $pack . "." . $this->fromFlag['alias'],
-            $this->getFromProvider($pack, $this->fromFlag['type'], $this->fromFlag['alias'])
-        );
+        $type = $this->fromFlag['type'];
+        $alias = $this->fromFlag['alias'];
+
+        // We want all the algorithms of this type
+        if ($alias === false) {
+            $manifest[$type] = $this->getFromProvider($pack, $type, $alias);
+        } else {
+            $manifest[$type][$alias] = $this->getFromProvider($pack, $type, $alias);
+        }
+
+        // Add the commands
+        $this->addFromArray($manifest, $pack);
+
+        $this->fromFlag = null;
     }
 
     private function getFromProvider($pack, $type, $alias)
     {
         $manifest = $this->getManifest($pack);
-        return $manifest[$type][$alias];
+
+        if (!$alias === false) {
+            return $manifest[$type][$alias];
+        }
+
+        return $manifest[$type];
     }
 
     /**

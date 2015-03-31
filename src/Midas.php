@@ -141,10 +141,16 @@ class Midas
      * Add multiple commands to the Command Manager
      *
      * @param array $commands
+     * @return $this
      */
-    public function addCommands(array $commands)
+    public function addCommands(array $commands = [])
     {
+        if (empty($commands)) {
+            return $this->packs->addTypeFromPack('commands');
+        }
+
         $this->commands->add($commands);
+        return $this;
     }
 
     /**
