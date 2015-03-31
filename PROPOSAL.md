@@ -192,7 +192,7 @@ $two = $data->get(); // get's latest result
   * `Midas\Data` extends `Illuminate\Support\Collections`
 
 #### Reserved Words
-  * These words may not be used as any aliases: `is`, `does`, `opperation`, `command`, `algorithm`, 
+  * These words may not be used as any aliases: `is`, `does`, `operation`, `command`, `algorithm`, 
   `data`, `parameter`, `midas`, `stream`, `pipe`, `end`, `result`, `out`, `output`, `finish`
   `solve`, `process`, `solveFor`
 
@@ -210,8 +210,7 @@ $two = $data->get(); // get's latest result
   * ~~Generic Command Helpers Init~~
 
 #### v0.3 Algorithm Packs and Samples
-  * Nest Algorithms here or at streaming?
-  * Add multiple algorithms (commands, questions, etc) from Algorithm Packs
+  * ~~Add multiple algorithms (commands, questions, etc) from Algorithm Packs~~
   * Create first-party sample packs:
     * Wrap Fractal to output data via an algorithm (as a test)
     * Solve equations using PHP math function
@@ -224,8 +223,9 @@ $two = $data->get(); // get's latest result
   * Wrap questions in operations
  
 #### v0.5 Streaming A
-  * Stream `$data` via an array of commands and algorightms
+  * Stream `$data` via an array of commands and algorithms
   * ```php $midas->stream($data, [['command', $params]]);```
+  * Nest Algorithms here or at streaming?
 
 #### v0.6 Streaming B
   * Stream `$data` using pipes
