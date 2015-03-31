@@ -6,6 +6,8 @@ use Michaels\Midas\Commands\CommandInterface;
 use Michaels\Midas\Commands\Manager as CommandManager;
 use Michaels\Midas\Data\Manager as DataManager;
 use Michaels\Midas\Data\RefinedData;
+use Michaels\Midas\Packs\Manager as PackManager;
+use Michaels\Midas\Manager as ConfigManager;
 
 /**
  * Primary API and entry point
@@ -20,6 +22,9 @@ class Midas
     /** @var DataManager **/
     protected $data;
 
+    /** @var  PackManager */
+    protected $packs;
+
     /**
      * Default configuration
      * @var array
@@ -29,7 +34,8 @@ class Midas
             'is', 'does', 'operation', 'command', 'algorithm', 'data', 'parameter', 'midas',
             'stream', 'pipe', 'end', 'result', 'out', 'output', 'finish', 'solve', 'process', 'solveFor'
         ],
-        'test_dummy' => true
+        'test_dummy' => true,
+        'load_standard_pack' => true
     ];
 
     /**
@@ -41,7 +47,8 @@ class Midas
     {
         $this->commands = new CommandManager();
         $this->data = new DataManager();
-        $this->config = new Manager(array_merge($this->defaultConfig, $config));
+        $this->config = new ConfigManager(array_merge($this->defaultConfig, $config));
+        $this->packs = new PackManager($this);
     }
 
     /**
@@ -113,25 +120,37 @@ class Midas
      * Add a command to the Command Manager
      *
      * @param string $alias
-     * @param string|Closure|CommandInterface $command
+     * @param mixed $command
+     * @return $this
      */
-    public function addCommand($alias, $command)
+    public function addCommand($alias, $command = false)
     {
         if (in_array($alias, $this->config('reserved_words'))) {
             throw new \InvalidArgumentException("`$alias` is a reserved word");
         }
 
+        if ($command === false) {
+            return $this->packs->addFromPack('commands', $alias);
+        }
+
         $this->commands->add($alias, $command);
+        return $this;
     }
 
     /**
      * Add multiple commands to the Command Manager
      *
      * @param array $commands
+     * @return $this
      */
-    public function addCommands(array $commands)
+    public function addCommands(array $commands = [])
     {
+        if (empty($commands)) {
+            return $this->packs->addTypeFromPack('commands');
+        }
+
         $this->commands->add($commands);
+        return $this;
     }
 
     /**
@@ -199,7 +218,7 @@ class Midas
      * Return a command as an instance of CommandInterface
      *
      * @param $alias
-     * @return Algorithms\CommandInterface
+     * @return \Michaels\Midas\Commands\CommandInterface
      */
     public function fetchCommand($alias)
     {
@@ -302,6 +321,16 @@ class Midas
         }
 
         return $this->data->get($alias);
+    }
+
+    public function addPack($pack, $namespace = false)
+    {
+        return $this->packs->add($pack, $namespace);
+    }
+
+    public function load($pack)
+    {
+        return $this->addPack($pack);
     }
 
     /**

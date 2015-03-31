@@ -3,7 +3,6 @@
 namespace Michaels\Midas\Test\Integration;
 
 use Codeception\Specify;
-use Michaels\Midas\Commands\CommandNotFoundException;
 use Michaels\Midas\Midas;
 use Michaels\Midas\Test\Stubs\ClassBasedCommand;
 
@@ -49,9 +48,31 @@ class MidasTest extends \PHPUnit_Framework_TestCase
         $this->specify("it adds commands", function () use ($midas) {
             $midas->addCommand('classTest1', 'Michaels\Midas\Test\Stubs\ClassBasedCommand');
             $midas->addCommand('objectTest1', new ClassBasedCommand());
-            $midas->addCommand('closureTest1', function ($data, array $params = null) {
+            $midas->addCommand('closureTest1', function () {
                 return TRUE;
             });
+
+            $commands = $midas->getAllCommands();
+            $this->assertArrayHasKey('classTest1', $commands, 'class-based command not set');
+            $this->assertEquals('Michaels\Midas\Test\Stubs\ClassBasedCommand', $commands['classTest1']);
+
+            $this->assertArrayHasKey('objectTest1', $commands, 'object-based command not set');
+            $this->assertInstanceOf('Michaels\Midas\Test\Stubs\ClassBasedCommand', $commands['objectTest1']);
+
+            $this->assertArrayHasKey('closureTest1', $commands, 'closure-based command not set');
+            $this->assertEquals(TRUE, $commands['closureTest1']('nothing', []));
+        });
+
+        $this->specify("it adds multiple commands", function () {
+            $midas = new Midas();
+
+            $midas->addCommands([
+                'classTest1' => 'Michaels\Midas\Test\Stubs\ClassBasedCommand',
+                'objectTest1' => new ClassBasedCommand(),
+                'closureTest1' => function () {
+                    return TRUE;
+                },
+            ]);
 
             $commands = $midas->getAllCommands();
             $this->assertArrayHasKey('classTest1', $commands, 'class-based command not set');
@@ -92,7 +113,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->specify("it fetches command", function () use ($midas) {
-            $midas->addCommand('fetchedCommand', function($data, $params){
+            $midas->addCommand('fetchedCommand', function(){
                 return true;
             });
 
@@ -114,11 +135,11 @@ class MidasTest extends \PHPUnit_Framework_TestCase
     {
         $midas = new Midas();
         $midas->addCommands([
-            'add' => function($data, $params = null) {
+            'add' => function($data) {
                 return $data + 10;
             },
 
-            'subtract' => function($data, $params = null) {
+            'subtract' => function($data) {
                 return $data - 10;
             },
 
@@ -130,7 +151,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
                 return $data . " " . $params['text'] . ".";
             },
 
-            'complexArray' => function ($data, $params = null) {
+            'complexArray' => function () {
                 return [
                     'int' => 1,
                     'bool' => true,
@@ -200,8 +221,8 @@ class MidasTest extends \PHPUnit_Framework_TestCase
     {
         // Namespaced Management is tested in tests/Unit/ManagerTest.php
         $this->specify("it uses `run()` to issue commands without params", function() {
-            $midas = new Midas();
 
+            $midas = new Midas();
             $midas->addCommand('noParams', function() {
                 return true;
             });
@@ -263,7 +284,7 @@ class MidasTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        InvalidArgumentException
+     * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage `data` is a reserved word
      */
     public function testThrowsExceptionForReservedWord()
@@ -358,6 +379,48 @@ class MidasTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($testStringData, $actualStringData->value(), 'string');
             $this->assertEquals($testBoolData, $actualBoolData->value(), 'bool');
             $this->assertEquals($testIntData, $actualIntData->value(), 'int');
+        });
+    }
+
+    public function testManageAlgorithmPacks()
+    {
+        $this->specify("it adds a pack from a direct array to a namespace", function() {
+            $midas = new Midas();
+            $midas->addPack([
+                'commands' => [
+                    'command1' => 'Full\Namespace\Command',
+                    'command2' => 'Full\Namespace\Command2'
+                ]
+            ], 'vendor.pack');
+
+            $this->assertTrue($midas->isCommand('vendor.pack.command1'), 'failed to set command one under a namespace');
+            $this->assertTrue($midas->isCommand('vendor.pack.command2'), 'failed to set command two under a namespace');
+        });
+
+        $this->specify("it adds a pack from a MidasProvider using its namespace", function() {
+            $midas = new Midas();
+            $midas->addPack('michaels.midas.test.stubs.pack'); // Stub Pack
+
+            $this->assertTrue($midas->isCommand('michaels.midas.test.stubs.pack.command1'), 'failed to set command one under a namespace');
+            $this->assertTrue($midas->isCommand('michaels.midas.test.stubs.pack.command2'), 'failed to set command two under a namespace');
+        });
+
+        $this->specify("it adds a specific command from a pack", function() {
+            $midas = new Midas();
+            $midas->addCommand('command2')->from('michaels.midas.test.stubs.pack');
+
+            $this->assertFalse($midas->isCommand('michaels.midas.test.stubs.pack.command1'), 'failed bc it set an extra command');
+            $this->assertTrue($midas->isCommand('michaels.midas.test.stubs.pack.command2'), 'failed to set specific desired command ');
+        });
+
+        $this->specify("it adds all commands from a pack", function() {
+            $midas = new Midas();
+
+            $midas->addCommands()->from('michaels.midas.test.stubs.pack');
+            $midas->addCommand('command2')->from('michaels.midas.test.stubs.pack');
+
+            $this->assertTrue($midas->isCommand('michaels.midas.test.stubs.pack.command1'), 'failed add first command');
+            $this->assertTrue($midas->isCommand('michaels.midas.test.stubs.pack.command2'), 'failed add second command');
         });
     }
 }

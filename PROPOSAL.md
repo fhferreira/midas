@@ -126,9 +126,11 @@ $dataset = $midas->getDataSet('dataset', false); // Returns a ResultDataSet, not
 /* Algorithm Packs */
 // Composer packages with a valid MidasProvider::provides()
 
-$midas->addX()->from('vendor.pack.algorithm'); // add a specific command
+$midas->addX('algorithm')->from('vendor.pack'); // add a specific command
 $midas->addXs()->from('vendor.pack'); // add all commands from pack
 $midas->addPack('vendor.pack'); // add all algorithms from pack
+
+$midas->vendor->pack->command();
 
 Class MidasPovider
 {
@@ -136,15 +138,15 @@ Class MidasPovider
     {
         return [
             'commands' => [
-                'com1' => $alg,
-                'com2' => $alg,
+                'com1' => 'Vendor\Pack\Commands\Command',
+                'com2' => 'vendor\Pack\Commands\AnotherCommand',
             ],
             'questions' => [],
         ]
     }
 }
 
-// A pack must be PSR-4: Vendor\Pack\Command
+// A pack must be PSR-4: Vendor\Pack
 
 /* Streaming and Pipes */
 $midas->stream($data, [
@@ -190,7 +192,7 @@ $two = $data->get(); // get's latest result
   * `Midas\Data` extends `Illuminate\Support\Collections`
 
 #### Reserved Words
-  * These words may not be used as any aliases: `is`, `does`, `opperation`, `command`, `algorithm`, 
+  * These words may not be used as any aliases: `is`, `does`, `operation`, `command`, `algorithm`, 
   `data`, `parameter`, `midas`, `stream`, `pipe`, `end`, `result`, `out`, `output`, `finish`
   `solve`, `process`, `solveFor`
 
@@ -208,8 +210,7 @@ $two = $data->get(); // get's latest result
   * ~~Generic Command Helpers Init~~
 
 #### v0.3 Algorithm Packs and Samples
-  * Nest Algorithms here or at streaming?
-  * Add multiple algorithms (commands, questions, etc) from Algorithm Packs
+  * ~~Add multiple algorithms (commands, questions, etc) from Algorithm Packs~~
   * Create first-party sample packs:
     * Wrap Fractal to output data via an algorithm (as a test)
     * Solve equations using PHP math function
@@ -219,11 +220,12 @@ $two = $data->get(); // get's latest result
   * Ask a question
   * Chain questions
   * Use conjunctions
-  * Wrap questions in opperations
+  * Wrap questions in operations
  
 #### v0.5 Streaming A
-  * Stream `$data` via an array of commands and algorightms
+  * Stream `$data` via an array of commands and algorithms
   * ```php $midas->stream($data, [['command', $params]]);```
+  * Nest Algorithms here or at streaming?
 
 #### v0.6 Streaming B
   * Stream `$data` using pipes
