@@ -6,6 +6,8 @@
 [![Coverage Status](https://coveralls.io/repos/chrismichaels84/midas/badge.svg?branch=master)](https://coveralls.io/r/chrismichaels84/midas?branch=master)
 [![Total Downloads](https://img.shields.io/packagist/dt/michaels/midas.svg?style=flat-square)](https://packagist.org/packages/michaels/midas)
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/74752ec3-3676-4167-a0f0-b17affea9928/big.png)](https://insight.sensiolabs.com/account/widget?project=74752ec3-3676-4167-a0f0-b17affea9928)
+
 Framework-agnostic manager for data processing, management, and analysis. Turn raw data into gold.
 
 > According to myth, Midas was a man bestowed with a golden hand that would transform all he touched to gold. Midas-Data does the same for your data sets. Just don't turn your wife to gold.
@@ -250,7 +252,6 @@ Contributions are welcome and will be fully credited. Please see [CONTRIBUTING](
 If you discover any security related issues, please email chrismichaels84@users.noreply.github.com instead of using the issue tracker.
 
 ## Credits
-
 - [Michael Wilson](https://github.com/chrismichaels84)
 - Open an issue to join it!
 
