@@ -4,7 +4,8 @@ namespace Michaels\Midas\Commands;
 use Closure;
 
 /**
- * Class GenericCommand
+ * A generic command used to wrap closure-based commands
+ *
  * @package Michaels\Midas\Commands
  */
 class GenericCommand implements CommandInterface

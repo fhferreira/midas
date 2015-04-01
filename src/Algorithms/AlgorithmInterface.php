@@ -1,6 +1,11 @@
 <?php
 namespace Michaels\Midas\Algorithms;
 
+/**
+ * Algorithm contract for all types
+ *
+ * @package Michaels\Midas\Algorithms
+ */
 interface AlgorithmInterface
 {
     /**

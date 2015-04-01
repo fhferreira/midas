@@ -1,6 +1,11 @@
 <?php
 namespace Michaels\Midas\Packs;
 
+/**
+ * Algorithm Pack Provider Contract
+ *
+ * @package Michaels\Midas\Packs
+ */
 interface MidasProviderInterface
 {
     /**

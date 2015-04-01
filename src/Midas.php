@@ -39,6 +39,12 @@ class Midas
     ];
 
     /**
+     * Flag for the current command namespace
+     * @var bool|string
+     */
+    protected $currentCommandNs = false;
+
+    /**
      * Create a new Midas Instance
      *
      * @param array $config
@@ -323,11 +329,24 @@ class Midas
         return $this->data->get($alias);
     }
 
+    /**
+     * Add all algorithms from a pack
+     *
+     * @param $pack
+     * @param bool $namespace
+     * @return PackManager
+     */
     public function addPack($pack, $namespace = false)
     {
         return $this->packs->add($pack, $namespace);
     }
 
+    /**
+     * Alias of addPack()
+     *
+     * @param $pack
+     * @return PackManager
+     */
     public function load($pack)
     {
         return $this->addPack($pack);
@@ -354,6 +373,12 @@ class Midas
         return $this->issueCommand($command, $arguments);
     }
 
+    /**
+     * Returns namespaced commands
+     *
+     * @param $name
+     * @return $this
+     */
     public function __get($name)
     {
         $dot = ($this->currentCommandNs === false) ? '' : '.';
@@ -361,8 +386,6 @@ class Midas
 
         return $this;
     }
-
-    protected $currentCommandNs = false;
 
     /**
      * Ensure that returned data is an instance of RefinedData
@@ -381,6 +404,8 @@ class Midas
     }
 
     /**
+     * Issues a command held in the manager
+     *
      * @param $name
      * @param $arguments
      * @return RefinedData

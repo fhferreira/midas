@@ -3,6 +3,11 @@ namespace Michaels\Midas;
 
 use ArrayAccess;
 
+/**
+ * Manages Basic Items
+ *
+ * @package Michaels\Midas
+ */
 class Manager implements ArrayAccess
 {
     /**
@@ -23,8 +28,9 @@ class Manager implements ArrayAccess
 
     /**
      * Add an item to the manager
-     * @param $alias
-     * @param null $algorithm
+     *
+     * @param string $alias
+     * @param mixed $algorithm
      * @return $this
      */
     public function add($alias, $algorithm = null)
@@ -50,7 +56,8 @@ class Manager implements ArrayAccess
 
     /**
      * Get an item from the manager
-     * @param $alias
+     *
+     * @param string $alias
      * @return array|bool
      */
     public function get($alias)
@@ -68,7 +75,8 @@ class Manager implements ArrayAccess
 
     /**
      * Get all the items from the manager
-     * @return mixed
+     *
+     * @return array
      */
     public function getAll()
     {
@@ -77,8 +85,9 @@ class Manager implements ArrayAccess
 
     /**
      * Create or overwrite an item
-     * @param $alias
-     * @param $value
+     *
+     * @param string $alias
+     * @param mixed $value
      * @return $this
      */
     public function set($alias, $value)
@@ -89,6 +98,7 @@ class Manager implements ArrayAccess
 
     /**
      * Overwrite all items with an array
+     *
      * @param array $items
      * @return $this
      */
@@ -100,6 +110,7 @@ class Manager implements ArrayAccess
 
     /**
      * Clear all items from the manager
+     *
      * @return $this
      */
     public function clear()
@@ -110,7 +121,8 @@ class Manager implements ArrayAccess
 
     /**
      * Delete an individual item
-     * @param $alias
+     *
+     * @param string $alias
      * @return bool
      */
     public function remove($alias)
@@ -125,7 +137,8 @@ class Manager implements ArrayAccess
 
     /**
      * Check if an item exists in the manager
-     * @param $alias
+     *
+     * @param string $alias
      * @return bool
      */
     public function exists($alias)
@@ -138,7 +151,9 @@ class Manager implements ArrayAccess
     }
 
     /**
-     * @param $alias
+     * Check if an alias is a namespace
+     *
+     * @param string $alias
      * @return bool|int
      */
     protected function isNamespaced($alias)
@@ -147,8 +162,10 @@ class Manager implements ArrayAccess
     }
 
     /**
-     * @param $chain
-     * @param $loc
+     * Get an item from array dot notation
+     *
+     * @param string $chain
+     * @param array $loc
      * @return array|bool
      */
     protected function getFromNamespace($chain, &$loc)
@@ -164,8 +181,10 @@ class Manager implements ArrayAccess
     }
 
     /**
-     * @param $alias
-     * @param $algorithm
+     * Add an item to array dot notation
+     *
+     * @param string $alias
+     * @param mixed $algorithm
      */
     protected function addToNamespace($alias, $algorithm)
     {
