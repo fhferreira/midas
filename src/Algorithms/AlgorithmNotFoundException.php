@@ -3,5 +3,12 @@ namespace Michaels\Midas\Algorithms;
 
 use Exception;
 
-class AlgorithmNotFoundException extends Exception {}
+/**
+ * AlgorithmNotFoundException
+ *
+ * @package Michaels\Midas\Algorithms
+ */
+class AlgorithmNotFoundException extends Exception
+{
 
+}

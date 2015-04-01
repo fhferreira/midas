@@ -6,6 +6,8 @@ use Michaels\Midas\Commands\CommandInterface;
 use Michaels\Midas\Commands\Manager as CommandManager;
 use Michaels\Midas\Data\Manager as DataManager;
 use Michaels\Midas\Data\RefinedData;
+use Michaels\Midas\Packs\Manager as PackManager;
+use Michaels\Midas\Manager as ConfigManager;
 
 /**
  * Primary API and entry point
@@ -20,6 +22,9 @@ class Midas
     /** @var DataManager **/
     protected $data;
 
+    /** @var  PackManager */
+    protected $packs;
+
     /**
      * Default configuration
      * @var array
@@ -29,8 +34,15 @@ class Midas
             'is', 'does', 'operation', 'command', 'algorithm', 'data', 'parameter', 'midas',
             'stream', 'pipe', 'end', 'result', 'out', 'output', 'finish', 'solve', 'process', 'solveFor'
         ],
-        'test_dummy' => true
+        'test_dummy' => true,
+        'load_standard_pack' => true
     ];
+
+    /**
+     * Flag for the current command namespace
+     * @var bool|string
+     */
+    protected $currentCommandNs = false;
 
     /**
      * Create a new Midas Instance
@@ -41,7 +53,8 @@ class Midas
     {
         $this->commands = new CommandManager();
         $this->data = new DataManager();
-        $this->config = new Manager(array_merge($this->defaultConfig, $config));
+        $this->config = new ConfigManager(array_merge($this->defaultConfig, $config));
+        $this->packs = new PackManager($this);
     }
 
     /**
@@ -113,25 +126,37 @@ class Midas
      * Add a command to the Command Manager
      *
      * @param string $alias
-     * @param string|Closure|CommandInterface $command
+     * @param mixed $command
+     * @return $this
      */
-    public function addCommand($alias, $command)
+    public function addCommand($alias, $command = false)
     {
         if (in_array($alias, $this->config('reserved_words'))) {
             throw new \InvalidArgumentException("`$alias` is a reserved word");
         }
 
+        if ($command === false) {
+            return $this->packs->addFromPack('commands', $alias);
+        }
+
         $this->commands->add($alias, $command);
+        return $this;
     }
 
     /**
      * Add multiple commands to the Command Manager
      *
      * @param array $commands
+     * @return $this
      */
-    public function addCommands(array $commands)
+    public function addCommands(array $commands = [])
     {
+        if (empty($commands)) {
+            return $this->packs->addTypeFromPack('commands');
+        }
+
         $this->commands->add($commands);
+        return $this;
     }
 
     /**
@@ -199,7 +224,7 @@ class Midas
      * Return a command as an instance of CommandInterface
      *
      * @param $alias
-     * @return Algorithms\CommandInterface
+     * @return \Michaels\Midas\Commands\CommandInterface
      */
     public function fetchCommand($alias)
     {
@@ -305,24 +330,61 @@ class Midas
     }
 
     /**
+     * Add all algorithms from a pack
+     *
+     * @param $pack
+     * @param bool $namespace
+     * @return PackManager
+     */
+    public function addPack($pack, $namespace = false)
+    {
+        return $this->packs->add($pack, $namespace);
+    }
+
+    /**
+     * Alias of addPack()
+     *
+     * @param $pack
+     * @return PackManager
+     */
+    public function load($pack)
+    {
+        return $this->addPack($pack);
+    }
+
+    /**
      * Handle commands issued
      *
      * This magic method processes commands.
      *
-     * @param string $name
+     * @param string $command
      * @param array $arguments
      * @return RefinedData
      */
-    public function __call($name, $arguments)
+    public function __call($command, $arguments)
     {
-        $command = $this->commands->fetch($name);
-        $data = isset($arguments[0]) ? $arguments[0] : null;
-        $params = (isset($arguments[1])) ? $arguments[1] : null;
-        $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
+        if ($command === "run") {
+            $command = array_shift($arguments);
 
-        $result = $command->run($data, $params);
+        } elseif ($this->currentCommandNs) {
+            $command = $this->currentCommandNs . '.' . $command;
+        }
 
-        return $this->ensureDataCollection($result, $returnRefined);
+        return $this->issueCommand($command, $arguments);
+    }
+
+    /**
+     * Returns namespaced commands
+     *
+     * @param $name
+     * @return $this
+     */
+    public function __get($name)
+    {
+        $dot = ($this->currentCommandNs === false) ? '' : '.';
+        $this->currentCommandNs .= $dot . $name;
+
+        return $this;
     }
 
     /**
@@ -339,5 +401,26 @@ class Midas
         } else {
             return $data;
         }
+    }
+
+    /**
+     * Issues a command held in the manager
+     *
+     * @param $name
+     * @param $arguments
+     * @return RefinedData
+     */
+    protected function issueCommand($name, $arguments)
+    {
+        $command = $this->commands->fetch($name);
+        $data = isset($arguments[0]) ? $arguments[0] : null;
+        $params = (isset($arguments[1])) ? $arguments[1] : null;
+        $returnRefined = (isset($arguments[2])) ? $arguments[2] : true;
+
+        $result = $command->run($data, $params);
+
+        $this->currentCommandNs = false; // reset the command namespace
+
+        return $this->ensureDataCollection($result, $returnRefined);
     }
 }

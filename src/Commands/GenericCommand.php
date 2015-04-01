@@ -4,7 +4,8 @@ namespace Michaels\Midas\Commands;
 use Closure;
 
 /**
- * Class GenericCommand
+ * A generic command used to wrap closure-based commands
+ *
  * @package Michaels\Midas\Commands
  */
 class GenericCommand implements CommandInterface
@@ -32,7 +33,7 @@ class GenericCommand implements CommandInterface
     /**
      * @inheritdoc
      */
-    public function run($data, array $params = null)
+    public function run($data, $params = null)
     {
         $closure = $this->closure;
         $result = $closure($data, $params, $this);

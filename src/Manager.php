@@ -3,6 +3,11 @@ namespace Michaels\Midas;
 
 use ArrayAccess;
 
+/**
+ * Manages Basic Items
+ *
+ * @package Michaels\Midas
+ */
 class Manager implements ArrayAccess
 {
     /**
@@ -23,13 +28,14 @@ class Manager implements ArrayAccess
 
     /**
      * Add an item to the manager
-     * @param $alias
-     * @param null $algorithm
+     *
+     * @param string $alias
+     * @param mixed $algorithm
      * @return $this
      */
     public function add($alias, $algorithm = null)
     {
-        // Multiple adds
+        // Are we adding multiple algorithms?
         if (is_array($alias)) {
             foreach ($alias as $key => $value) {
                 $this->add($key, $value);
@@ -37,15 +43,10 @@ class Manager implements ArrayAccess
             return $this;
         }
 
-        // Namespaced
-        if (strpos($alias, ".")) {
-            $loc = &$this->items;
-            foreach (explode('.', $alias) as $step) {
-                $loc = &$loc[$step];
-            }
-            $loc = $algorithm;
+        // No, we are adding a single algorithm
+        if ($this->isNamespaced($alias)) {
+            $this->addToNamespace($alias, $algorithm);
 
-        // Singular
         } else {
             $this->items[$alias] = $algorithm;
         }
@@ -55,36 +56,27 @@ class Manager implements ArrayAccess
 
     /**
      * Get an item from the manager
-     * @param $alias
+     *
+     * @param string $alias
      * @return array|bool
      */
     public function get($alias)
     {
-        // Namespaced
-        if (strpos($alias, ".")) {
-            $loc = &$this->items;
-            foreach (explode('.', $alias) as $step) {
-                if (isset($loc[$step])) {
-                    $loc = &$loc[$step];
-                } else {
-                    return false;
-                }
-            }
-            return $loc;
+        if ($this->isNamespaced($alias)) {
+            return $this->getFromNamespace($alias, $this->items);
         }
 
-        // Non-namespaced, doesn't exist
-        if (!isset($this->items[$alias])) {
+        if (! $this->exists($alias)) {
             return false;
         }
 
-        // Non-namespaced, does exist
         return $this->items[$alias];
     }
 
     /**
      * Get all the items from the manager
-     * @return mixed
+     *
+     * @return array
      */
     public function getAll()
     {
@@ -93,25 +85,32 @@ class Manager implements ArrayAccess
 
     /**
      * Create or overwrite an item
-     * @param $alias
-     * @param $value
+     *
+     * @param string $alias
+     * @param mixed $value
+     * @return $this
      */
     public function set($alias, $value)
     {
         $this->items[$alias] = $value;
+        return $this;
     }
 
     /**
      * Overwrite all items with an array
+     *
      * @param array $items
+     * @return $this
      */
     public function reset(array $items = [])
     {
         $this->items = $items;
+        return $this;
     }
 
     /**
      * Clear all items from the manager
+     *
      * @return $this
      */
     public function clear()
@@ -122,23 +121,78 @@ class Manager implements ArrayAccess
 
     /**
      * Delete an individual item
-     * @param $alias
+     *
+     * @param string $alias
+     * @return bool
      */
     public function remove($alias)
     {
         if (isset($this->items[$alias])) {
+            $removed = $this->items[$alias];
             unset($this->items[$alias]);
         }
+
+        return (isset($removed)) ? $removed : false;
     }
 
     /**
      * Check if an item exists in the manager
-     * @param $alias
+     *
+     * @param string $alias
      * @return bool
      */
     public function exists($alias)
     {
+        if ($this->isNamespaced($alias)) {
+            return (bool) $this->getFromNamespace($alias, $this->items);
+        }
+
         return (isset($this->items[$alias]));
+    }
+
+    /**
+     * Check if an alias is a namespace
+     *
+     * @param string $alias
+     * @return bool|int
+     */
+    protected function isNamespaced($alias)
+    {
+        return strpos($alias, ".");
+    }
+
+    /**
+     * Get an item from array dot notation
+     *
+     * @param string $chain
+     * @param array $loc
+     * @return array|bool
+     */
+    protected function getFromNamespace($chain, &$loc)
+    {
+        foreach (explode('.', $chain) as $step) {
+            if (isset($loc[$step])) {
+                $loc = &$loc[$step];
+            } else {
+                return false;
+            }
+        }
+        return $loc;
+    }
+
+    /**
+     * Add an item to array dot notation
+     *
+     * @param string $alias
+     * @param mixed $algorithm
+     */
+    protected function addToNamespace($alias, $algorithm)
+    {
+        $loc = &$this->items;
+        foreach (explode('.', $alias) as $step) {
+            $loc = &$loc[$step];
+        }
+        $loc = $algorithm;
     }
 
     /**

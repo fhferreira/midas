@@ -1,6 +1,11 @@
 <?php
 namespace Michaels\Midas\Algorithms;
 
+/**
+ * Algorithm contract for all types
+ *
+ * @package Michaels\Midas\Algorithms
+ */
 interface AlgorithmInterface
 {
     /**
@@ -9,5 +14,5 @@ interface AlgorithmInterface
      * @param array $params
      * @return mixed
      */
-    public function run($data, array $params = null);
+    public function run($data, $params = null);
 }

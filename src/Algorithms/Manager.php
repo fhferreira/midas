@@ -4,13 +4,21 @@ namespace Michaels\Midas\Algorithms;
 use Closure;
 use Michaels\Midas\Manager as BaseManager;
 
+/**
+ * Manages Algorithms
+ *
+ * Basic functionality for managing various types of algorithms
+ *
+ * @package Michaels\Midas\Algorithms
+ * @inheritdoc
+ */
 abstract class Manager extends BaseManager
 {
     /**
      * Handles a request for a not found algorithm.
      * Typically, throw some instance of AlgorithmNotFoundException
      *
-     * @param $alias name of the algorithm not found
+     * @param string $alias name of the algorithm not found
      * @return void
      */
     abstract protected function handleNotFound($alias);
@@ -43,13 +51,13 @@ abstract class Manager extends BaseManager
         }
 
         $stored = $this->get($alias);
-        $command = null;
+        $algorithm = null;
 
         if ($stored instanceof Closure) {
-            $command = $this->createGeneric($stored);
+            $algorithm = $this->createGeneric($stored);
 
         } elseif (is_object($stored)) {
-            $command =  $stored;
+            $algorithm =  $stored;
 
         } elseif (is_string($stored)) {
             if (!class_exists($stored, true)) {
@@ -57,12 +65,13 @@ abstract class Manager extends BaseManager
             }
 
             $class = '\\' . $stored;
-            $command =  new $class();
+            $algorithm =  new $class();
         }
 
-        $this->validate($command);
+        // Will throw an exception if the algorithm is invalid
+        $this->validate($algorithm);
 
-        return $command;
+        return $algorithm;
     }
 
     /**

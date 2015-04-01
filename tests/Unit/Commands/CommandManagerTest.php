@@ -36,6 +36,16 @@ class CommandsManagerTest extends \PHPUnit_Framework_TestCase
 
             $this->assertInstanceOf($interface, $command, "Invalid because does not implement CommandInterface");
         });
+
+        $this->specify("returns a valid namespaced command on fetch()", function() use ($manager, $interface) {
+            $manager->add('one.two.three', function($data, $params) {
+                return true;
+            });
+
+            $command = $manager->fetch('one.two.three');
+
+            $this->assertInstanceOf($interface, $command, "Invalid because does not implement CommandInterface");
+        });
     }
 
     public function testFetchCommandsExceptions()
@@ -54,6 +64,11 @@ class CommandsManagerTest extends \PHPUnit_Framework_TestCase
         $this->specify("throws Exception when object doesnt implement CommandInterface", function () use ($manager) {
             $manager->add('invalidClassTest', 'Michaels\Midas\Test\Stubs\InvalidClassBasedCommand');
             $manager->fetch('invalidClassTest');
+        }, ['throws' => 'Michaels\Midas\Commands\InvalidCommandException']);
+
+        $this->specify("throws Exception when trying to fetch a namespace", function () use ($manager) {
+            $manager->add('one.two.three', function(){});
+            $manager->fetch('one.two');
         }, ['throws' => 'Michaels\Midas\Commands\InvalidCommandException']);
     }
 }
