@@ -6,7 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/chrismichaels84/midas/badge.svg?branch=master)](https://coveralls.io/r/chrismichaels84/midas?branch=master)
 [![Total Downloads](https://img.shields.io/packagist/dt/michaels/midas.svg?style=flat-square)](https://packagist.org/packages/michaels/midas)
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/74752ec3-3676-4167-a0f0-b17affea9928/big.png)](https://insight.sensiolabs.com/account/widget?project=74752ec3-3676-4167-a0f0-b17affea9928)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/74752ec3-3676-4167-a0f0-b17affea9928/big.png)](https://insight.sensiolabs.com/projects/74752ec3-3676-4167-a0f0-b17affea9928)
 
 Framework-agnostic manager for data processing, management, and analysis. Turn raw data into gold.
 
