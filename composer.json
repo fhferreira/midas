@@ -1,8 +1,8 @@
 {
     "name": "michaels/midas",
-    "description": "Framework-agnostic manager for algorithms, equations, and data processing tasks. Turn raw data into gold.",
+    "description": "Framework-agnostic manager for data processing, management, and analysis. Turn raw data into gold.",
     "keywords": [
-        "data"
+        "data", "midas", "algorithms", "algorithm"
     ],
     "homepage": "https://github.com/chrismichaels84/midas",
     "license": "MIT",
@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php" : ">=5.3.0",
+        "php" : ">=5.4.0",
         "illuminate/support": "5.*"
     },
     "require-dev": {
@@ -31,11 +31,6 @@
     "autoload-dev": {
         "psr-4": {
             "Michaels\\Midas\\Test\\": "tests"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
         }
     }
 }
